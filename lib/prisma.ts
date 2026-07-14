@@ -13,11 +13,9 @@ function getConnectionString(): string {
   if (!url) {
     throw new Error("DATABASE_URL variable is not set.");
   }
-  // Convert custom prisma+postgres:// scheme to direct postgres:// tcp connection for pg driver
   if (url.startsWith("prisma+postgres://")) {
     return "postgres://postgres:postgres@localhost:51214/template1?sslmode=disable";
   }
-  // Check if it is a placeholder
   if (url.includes("[ref]") || url.includes("[password]") || url.includes("[region]")) {
     console.warn("DATABASE_URL contains placeholder values. Using local placeholder connection string.");
     return "postgresql://postgres:postgres@localhost:5432/postgres";
