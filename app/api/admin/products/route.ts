@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 
 export async function GET() {
   try {
@@ -55,6 +56,9 @@ export async function POST(request: Request) {
         isActive: true,
       },
     });
+
+    // Invalidate next.js static cache for the home catalog
+    revalidatePath("/");
 
     return NextResponse.json({
       ...product,

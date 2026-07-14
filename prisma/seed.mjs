@@ -2,8 +2,19 @@ import { PrismaClient } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 import pg from "pg";
 
-// Always use the direct standard postgres:// protocol for the native pg client
-const connectionString = "postgres://postgres:postgres@localhost:51214/template1?sslmode=disable";
+function getConnectionString() {
+  const url = process.env.DATABASE_URL;
+  if (!url) {
+    console.warn("DATABASE_URL variable is not set. Using local placeholder connection string.");
+    return "postgresql://postgres:postgres@localhost:5432/postgres";
+  }
+  if (url.startsWith("prisma+postgres://")) {
+    return "postgres://postgres:postgres@localhost:51214/template1?sslmode=disable";
+  }
+  return url;
+}
+
+const connectionString = getConnectionString();
 const pool = new pg.Pool({ connectionString });
 const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter });
@@ -11,7 +22,7 @@ const prisma = new PrismaClient({ adapter });
 async function main() {
   console.log("Cleaning database and setting up system records...");
   
-  // Clear any existing products (User requested empty catalog by default)
+  // Clear any existing products to prevent duplicates during seeding
   await prisma.product.deleteMany({});
   console.log("Products table cleared.");
 
@@ -27,6 +38,41 @@ async function main() {
     },
   });
   console.log("System admin record validated.");
+
+  // Seed premium luxury hypercars
+  const hypercars = [
+    {
+      name: "Ferrari SF90 Stradale",
+      description: "El primer híbrido enchufable de Ferrari, que ofrece 1000 CV de potencia combinada de un motor V8 turboalimentado y tres motores eléctricos. Una obra maestra de la aerodinámica y la ingeniería de Maranello.",
+      price: 524000.00,
+      stock: 5,
+      images: ["/images/ferrari-sf90.jpg"],
+      isActive: true,
+    },
+    {
+      name: "Lamborghini Revuelto",
+      description: "El primer superdeportivo híbrido V12 enchufable HPEV (High Performance Electrified Vehicle). Combina un motor V12 de aspiración natural con tres motores eléctricos para desatar 1015 CV.",
+      price: 608000.00,
+      stock: 3,
+      images: ["/images/lambo-revuelto.jpg"],
+      isActive: true,
+    },
+    {
+      name: "Bugatti Chiron Super Sport",
+      description: "La cúspide de la velocidad y el lujo. Impulsado por el legendario motor W16 de 8.0 litros con cuatro turbocompresores, que produce 1600 CV de pura potencia y confort inigualable.",
+      price: 3900000.00,
+      stock: 2,
+      images: ["/images/bugatti-chiron.jpg"],
+      isActive: true,
+    }
+  ];
+
+  for (const car of hypercars) {
+    await prisma.product.create({
+      data: car,
+    });
+  }
+  console.log("Premium hypercars seeded successfully.");
   
   console.log("Database initialized. Ready for admin CRUD operations.");
 }

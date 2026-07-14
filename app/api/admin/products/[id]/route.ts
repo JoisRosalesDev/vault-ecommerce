@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 
 export async function PUT(
   request: Request,
@@ -38,6 +39,9 @@ export async function PUT(
       },
     });
 
+    // Invalidate static cache
+    revalidatePath("/");
+
     return NextResponse.json({
       ...product,
       price: Number(product.price),
@@ -69,6 +73,10 @@ export async function DELETE(
         where: { id },
         data: { isActive: false },
       });
+
+      // Invalidate static cache
+      revalidatePath("/");
+
       return NextResponse.json({
         success: true,
         message: "Producto desactivado correctamente para conservar el historial de ventas.",
@@ -80,6 +88,9 @@ export async function DELETE(
     await prisma.product.delete({
       where: { id },
     });
+
+    // Invalidate static cache
+    revalidatePath("/");
 
     return NextResponse.json({
       success: true,
