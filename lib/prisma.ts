@@ -11,7 +11,8 @@ let prisma: PrismaClient;
 function getConnectionString(): string {
   const url = process.env.DATABASE_URL;
   if (!url) {
-    throw new Error("DATABASE_URL variable is not set.");
+    console.warn("DATABASE_URL variable is not set. Using local placeholder connection string.");
+    return "postgresql://postgres:postgres@localhost:5432/postgres";
   }
   if (url.startsWith("prisma+postgres://")) {
     return "postgres://postgres:postgres@localhost:51214/template1?sslmode=disable";
