@@ -1,36 +1,83 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# VAULT - Plataforma de Comercio Electrónico Premium
 
-## Getting Started
+Este es el repositorio oficial de **VAULT**, una plataforma de comercio electrónico de alta gama desarrollada utilizando Next.js (App Router), TypeScript, Tailwind CSS, Prisma ORM y Supabase. El proyecto está estructurado siguiendo los principios de diseño de software limpio y la metodología de **Diseño Atómico**.
 
-First, run the development server:
+## Tecnologías Principales
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- **Framework**: Next.js (App Router)
+- **Lenguaje**: TypeScript
+- **Estilos**: Tailwind CSS
+- **Base de Datos**: PostgreSQL + Prisma ORM (v7.8)
+- **Autenticación y Almacenamiento**: Supabase (Auth + Storage)
+- **Pasarela de Pago**: Stripe SDK
+- **Gestor de Estado**: Zustand
+- **Animaciones**: GSAP (GreenSock)
+
+---
+
+## Estructura de Directorios (Diseño Atómico)
+
+La organización de componentes del frontend sigue estrictamente el patrón de Atomic Design:
+
+```text
+/components
+  /atoms         - Elementos indivisibles (p. ej., Skeleton, Button)
+  /molecules     - Agrupaciones simples de átomos (p. ej., ProductCard)
+  /organisms     - Secciones complejas de la interfaz (p. ej., CartDrawer, ProductGrid)
+  /templates     - Estructuras de layout de página reutilizables (p. ej., CatalogView)
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Configuración y Variables de Entorno
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. Copie el archivo de plantilla `.env.example` para crear su archivo de configuración local:
+   ```bash
+   cp .env.example .env
+   ```
+2. Complete las variables de entorno necesarias:
+   - `DATABASE_URL`: URL del pool de conexiones de su base de datos.
+   - `DIRECT_DATABASE_URL`: URL de conexión directa para migraciones.
+   - `STRIPE_SECRET_KEY`: Llave secreta del panel de desarrollador de Stripe.
+   - `STRIPE_WEBHOOK_SECRET`: Secreto para verificar la firma de eventos webhook de Stripe.
+   - `NEXT_PUBLIC_SUPABASE_URL` y `NEXT_PUBLIC_SUPABASE_ANON_KEY`: Credenciales públicas de su proyecto Supabase.
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## Base de Datos (Prisma v7)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Prisma v7 gestiona los datos de conexión desde `prisma.config.ts` en lugar de hacerlo directamente en `schema.prisma`. 
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Para inicializar y aplicar el esquema a su base de datos, ejecute:
 
-## Deploy on Vercel
+```bash
+# Sincronizar el esquema con la base de datos
+npx prisma db push
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+# Generar el cliente de base de datos de Prisma
+npx prisma generate
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## Ejecución del Proyecto
+
+1. Instale las dependencias del proyecto:
+   ```bash
+   pnpm install
+   ```
+2. Ejecute el servidor de desarrollo:
+   ```bash
+   pnpm dev
+   ```
+3. Abra [http://localhost:3000](http://localhost:3000) en su navegador para ver la aplicación web.
+
+---
+
+## Compilación de Producción
+
+Para compilar y validar la aplicación para entornos de producción:
+
+```bash
+pnpm run build
+```
