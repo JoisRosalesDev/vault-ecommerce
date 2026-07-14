@@ -29,7 +29,7 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { name, description, price, stock, images } = body;
+    const { name, description, price, stock, images, brand, currency } = body;
 
     // Strict validation
     if (!name || !description || price === undefined || stock === undefined) {
@@ -49,6 +49,8 @@ export async function POST(request: Request) {
     const product = await prisma.product.create({
       data: {
         name,
+        brand: brand || "Other",
+        currency: currency || "USD",
         description,
         price: Number(price),
         stock: Number(stock),

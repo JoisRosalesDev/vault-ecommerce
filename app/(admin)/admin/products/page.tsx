@@ -3,10 +3,14 @@
 import { Skeleton } from "@/components/atoms/skeleton";
 import { Plus, Edit2, Trash2, X, AlertCircle } from "lucide-react";
 import { useEffect, useState } from "react";
+import { uploadProductImage } from "@/lib/supabase";
+import { formatPrice } from "@/lib/utils";
 
 interface Product {
   id: string;
   name: string;
+  brand: string;
+  currency: string;
   description: string;
   price: number;
   stock: number;
@@ -23,10 +27,13 @@ export default function AdminProductsPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [name, setName] = useState("");
+  const [brand, setBrand] = useState("other");
+  const [currency, setCurrency] = useState("USD");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
   const [stock, setStock] = useState("");
   const [imageUrl, setImageUrl] = useState("");
+  const [imageFile, setImageFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const fetchProducts = async () => {
@@ -55,20 +62,26 @@ export default function AdminProductsPage() {
   const openCreateModal = () => {
     setEditingProduct(null);
     setName("");
+    setBrand("other");
+    setCurrency("USD");
     setDescription("");
     setPrice("");
     setStock("");
     setImageUrl("");
+    setImageFile(null);
     setIsModalOpen(true);
   };
 
   const openEditModal = (product: Product) => {
     setEditingProduct(product);
     setName(product.name);
+    setBrand(product.brand || "other");
+    setCurrency(product.currency || "USD");
     setDescription(product.description);
     setPrice(product.price.toString());
     setStock(product.stock.toString());
     setImageUrl(product.images[0] || "");
+    setImageFile(null);
     setIsModalOpen(true);
   };
 
@@ -77,12 +90,34 @@ export default function AdminProductsPage() {
     setIsSubmitting(true);
     setErrorMsg(null);
 
+    let finalImageUrl = imageUrl;
+
+    // Handle Image Upload to Supabase Storage if a local file is chosen
+    if (imageFile) {
+      try {
+        const uniqueFileName = `product-${Date.now()}-${imageFile.name.replace(/\s+/g, "_")}`;
+        const uploadedUrl = await uploadProductImage(imageFile, uniqueFileName);
+        if (!uploadedUrl) {
+          throw new Error("No se pudo subir la imagen a Supabase Storage.");
+        }
+        finalImageUrl = uploadedUrl;
+      } catch (err) {
+        console.error(err);
+        const error = err as Error;
+        setErrorMsg(error.message || "Error al cargar la imagen del dispositivo.");
+        setIsSubmitting(false);
+        return;
+      }
+    }
+
     const payload = {
       name,
+      brand,
+      currency,
       description,
       price: parseFloat(price),
       stock: parseInt(stock),
-      images: imageUrl ? [imageUrl] : [],
+      images: finalImageUrl ? [finalImageUrl] : [],
     };
 
     try {
@@ -155,9 +190,9 @@ export default function AdminProductsPage() {
 
         <button
           onClick={openCreateModal}
-          className="flex items-center gap-2 px-5 py-3 rounded-xl bg-neutral-100 hover:bg-white text-neutral-950 font-semibold transition-all transform active:scale-95 shadow-lg"
+          className="flex items-center gap-2 px-5 py-3 rounded-xl bg-neutral-100 hover:bg-white text-neutral-950 font-semibold transition-all transform active:scale-95 shadow-lg cursor-pointer"
         >
-          <Plus className="w-4 h-4" />
+          <Plus className="w-4 h-4 text-neutral-950" />
           Añadir Producto
         </button>
       </div>
@@ -184,7 +219,7 @@ export default function AdminProductsPage() {
           </p>
           <button
             onClick={openCreateModal}
-            className="mt-4 text-sm text-neutral-300 hover:text-white font-mono underline"
+            className="mt-4 text-sm text-neutral-300 hover:text-white font-mono underline cursor-pointer"
           >
             Crear el primer producto ahora
           </button>
@@ -206,14 +241,21 @@ export default function AdminProductsPage() {
                 <tr key={product.id} className="hover:bg-neutral-900/30 transition-colors">
                   <td className="py-5 px-6 font-medium text-white">
                     <div className="flex flex-col">
-                      <span>{product.name}</span>
-                      <span className="text-xs text-neutral-500 font-normal line-clamp-1 max-w-sm mt-0.5">
+                      <div className="flex items-center gap-2">
+                        <span>{product.name}</span>
+                        {product.brand && product.brand !== "other" && (
+                          <span className="text-[8px] font-mono tracking-wider px-1.5 py-0.5 rounded bg-white/[0.04] border border-white/5 text-neutral-450 uppercase font-semibold">
+                            {product.brand}
+                          </span>
+                        )}
+                      </div>
+                      <span className="text-xs text-neutral-550 font-normal line-clamp-1 max-w-sm mt-0.5">
                         {product.description}
                       </span>
                     </div>
                   </td>
-                  <td className="py-5 px-6 font-mono text-neutral-300">
-                    ${product.price.toLocaleString("es-ES", { minimumFractionDigits: 2 })}
+                  <td className="py-5 px-6 font-mono text-neutral-300 font-semibold">
+                    {formatPrice(product.price, product.currency)}
                   </td>
                   <td className="py-5 px-6 font-mono text-neutral-350">
                     {product.stock}
@@ -233,14 +275,14 @@ export default function AdminProductsPage() {
                     <div className="flex items-center justify-end gap-3">
                       <button
                         onClick={() => openEditModal(product)}
-                        className="p-2 rounded-lg text-neutral-400 hover:text-white hover:bg-neutral-800/80 transition-colors"
+                        className="p-2 rounded-lg text-neutral-400 hover:text-white hover:bg-neutral-800/80 transition-colors cursor-pointer"
                         aria-label="Editar"
                       >
                         <Edit2 className="w-4 h-4" />
                       </button>
                       <button
                         onClick={() => handleDelete(product.id)}
-                        className="p-2 rounded-lg text-neutral-500 hover:text-red-400 hover:bg-red-500/10 transition-colors"
+                        className="p-2 rounded-lg text-neutral-500 hover:text-red-400 hover:bg-red-500/10 transition-colors cursor-pointer"
                         aria-label="Eliminar"
                       >
                         <Trash2 className="w-4 h-4" />
@@ -257,28 +299,43 @@ export default function AdminProductsPage() {
       {/* CRUD Edit/Create Modal Overlay */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-black/80 backdrop-blur-xs" onClick={() => setIsModalOpen(false)} />
+          <div className="absolute inset-0 bg-black/85 backdrop-blur-xs" onClick={() => setIsModalOpen(false)} />
           
-          <div className="relative z-10 w-full max-w-lg bg-neutral-900 border border-neutral-800 rounded-2xl shadow-2xl overflow-hidden">
+          <div className="relative z-10 w-full max-w-lg bg-neutral-905 border border-neutral-800 rounded-2xl shadow-2xl overflow-hidden">
             <div className="px-6 py-5 border-b border-neutral-800 flex items-center justify-between">
               <h2 className="text-lg font-bold text-white">
                 {editingProduct ? "Editar Producto" : "Nuevo Producto"}
               </h2>
-              <button onClick={() => setIsModalOpen(false)} className="text-neutral-500 hover:text-white transition-colors">
+              <button onClick={() => setIsModalOpen(false)} className="text-neutral-500 hover:text-white transition-colors cursor-pointer">
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <form onSubmit={handleSubmit} className="p-6 space-y-4">
-              <div>
-                <label className="block text-xs font-mono text-neutral-450 uppercase mb-1">Nombre</label>
-                <input
-                  type="text"
-                  required
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl bg-neutral-950 border border-neutral-800 text-white text-sm focus:border-neutral-700 outline-none transition-colors"
-                />
+            <form onSubmit={handleSubmit} className="p-6 space-y-4 max-h-[80vh] overflow-y-auto">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="col-span-2 sm:col-span-1">
+                  <label className="block text-xs font-mono text-neutral-450 uppercase mb-1">Nombre</label>
+                  <input
+                    type="text"
+                    required
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    className="w-full px-4 py-3 rounded-xl bg-neutral-950 border border-neutral-800 text-white text-sm focus:border-neutral-700 outline-none transition-colors"
+                  />
+                </div>
+                <div className="col-span-2 sm:col-span-1">
+                  <label className="block text-xs font-mono text-neutral-450 uppercase mb-1">Marca del Auto</label>
+                  <select
+                    value={brand}
+                    onChange={(e) => setBrand(e.target.value)}
+                    className="w-full px-4 py-3 rounded-xl bg-neutral-950 border border-neutral-800 text-white text-sm focus:border-neutral-700 outline-none transition-colors"
+                  >
+                    <option value="ferrari">Ferrari</option>
+                    <option value="lamborghini">Lamborghini</option>
+                    <option value="bugatti">Bugatti</option>
+                    <option value="other">Otro / Multimarca</option>
+                  </select>
+                </div>
               </div>
 
               <div>
@@ -292,45 +349,103 @@ export default function AdminProductsPage() {
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-mono text-neutral-450 uppercase mb-1">Precio ($)</label>
+              <div className="grid grid-cols-3 gap-4">
+                <div className="col-span-2">
+                  <label className="block text-xs font-mono text-neutral-450 uppercase mb-1">Precio</label>
                   <input
                     type="number"
                     step="0.01"
                     required
+                    placeholder="0.00"
                     value={price}
                     onChange={(e) => setPrice(e.target.value)}
                     className="w-full px-4 py-3 rounded-xl bg-neutral-950 border border-neutral-800 text-white text-sm focus:border-neutral-700 outline-none transition-colors"
                   />
+                  <p className="mt-1 text-[9px] text-neutral-500 font-mono">Permite decimales para precisión de la moneda</p>
                 </div>
                 <div>
-                  <label className="block text-xs font-mono text-neutral-450 uppercase mb-1">Stock</label>
-                  <input
-                    type="number"
-                    required
-                    value={stock}
-                    onChange={(e) => setStock(e.target.value)}
+                  <label className="block text-xs font-mono text-neutral-450 uppercase mb-1">Moneda</label>
+                  <select
+                    value={currency}
+                    onChange={(e) => setCurrency(e.target.value)}
                     className="w-full px-4 py-3 rounded-xl bg-neutral-950 border border-neutral-800 text-white text-sm focus:border-neutral-700 outline-none transition-colors"
-                  />
+                  >
+                    <option value="USD">USD ($)</option>
+                    <option value="CLP">CLP ($)</option>
+                    <option value="EUR">EUR (€)</option>
+                  </select>
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-mono text-neutral-450 uppercase mb-1">URL de Imagen</label>
+                <label className="block text-xs font-mono text-neutral-450 uppercase mb-1">Stock de Unidades</label>
                 <input
-                  type="url"
-                  placeholder="https://..."
-                  value={imageUrl}
-                  onChange={(e) => setImageUrl(e.target.value)}
+                  type="number"
+                  required
+                  value={stock}
+                  onChange={(e) => setStock(e.target.value)}
                   className="w-full px-4 py-3 rounded-xl bg-neutral-950 border border-neutral-800 text-white text-sm focus:border-neutral-700 outline-none transition-colors"
                 />
+              </div>
+
+              {/* device gallery file picker */}
+              <div>
+                <label className="block text-xs font-mono text-neutral-450 uppercase mb-1">Imagen del Vehículo</label>
+                <div className="flex flex-col gap-3">
+                  <label className="flex flex-col items-center justify-center w-full h-28 border border-dashed rounded-xl border-neutral-850 hover:border-neutral-700 bg-neutral-950 hover:bg-neutral-950/70 transition-all cursor-pointer text-center">
+                    <div className="flex flex-col items-center justify-center px-4 py-3">
+                      <Plus className="w-5 h-5 text-neutral-500 mb-1" />
+                      <p className="text-xs text-neutral-450 truncate max-w-xs font-medium">
+                        {imageFile ? imageFile.name : "Seleccionar desde el dispositivo"}
+                      </p>
+                      <p className="mt-0.5 text-[9px] text-neutral-500 font-mono">JPG, PNG, WEBP, etc.</p>
+                    </div>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => {
+                        if (e.target.files && e.target.files[0]) {
+                          setImageFile(e.target.files[0]);
+                        }
+                      }}
+                      className="hidden"
+                    />
+                  </label>
+                  
+                  {(imageUrl || imageFile) && (
+                    <div className="flex items-center gap-3 p-2.5 rounded-xl border border-neutral-800 bg-neutral-950/40">
+                      <div className="relative w-12 h-12 rounded-lg overflow-hidden bg-black flex-shrink-0">
+                        <img
+                          src={imageFile ? URL.createObjectURL(imageFile) : imageUrl}
+                          alt="Vista previa"
+                          className="object-cover w-full h-full"
+                        />
+                      </div>
+                      <div className="flex-grow min-w-0">
+                        <p className="text-[11px] font-mono text-neutral-400 truncate">
+                          {imageFile ? imageFile.name : "Imagen del catálogo cargada"}
+                        </p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setImageFile(null);
+                          setImageUrl("");
+                        }}
+                        className="text-neutral-500 hover:text-red-400 p-1.5 transition-colors cursor-pointer"
+                        aria-label="Quitar imagen"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                  )}
+                </div>
               </div>
 
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full mt-4 py-4 rounded-xl bg-neutral-100 hover:bg-white text-neutral-950 font-semibold transition-all transform active:scale-[0.98] disabled:bg-neutral-800 disabled:text-neutral-500"
+                className="w-full mt-4 py-4 rounded-xl bg-neutral-100 hover:bg-white text-neutral-950 font-semibold transition-all transform active:scale-[0.98] disabled:bg-neutral-800 disabled:text-neutral-500 cursor-pointer"
               >
                 {isSubmitting ? "Guardando..." : "Guardar Producto"}
               </button>

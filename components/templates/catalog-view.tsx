@@ -2,9 +2,10 @@
 
 import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ProductGrid, Product } from "../organisms/product-grid";
 import { CartDrawer } from "../organisms/cart-drawer";
-import { ShoppingBag, Lock, ShieldCheck } from "lucide-react";
+import { ShoppingBag, Lock, ShieldCheck, ChevronRight } from "lucide-react";
 import { useCartStore } from "@/hooks/useCartStore";
 import Link from "next/link";
 
@@ -12,10 +13,35 @@ interface CatalogViewProps {
   initialProducts: Product[];
 }
 
+const slidesData = [
+  {
+    brand: "ferrari",
+    title: "Ferrari",
+    subtitle: "Rendimiento Extremo y Legado F1",
+    image: "/images/ferrari-sf90.jpg",
+    color: "#EF4444",
+  },
+  {
+    brand: "lamborghini",
+    title: "Lamborghini",
+    subtitle: "Diseño Audaz y Emoción V12",
+    image: "/images/lambo-revuelto.jpg",
+    color: "#F59E0B",
+  },
+  {
+    brand: "bugatti",
+    title: "Bugatti",
+    subtitle: "La Cúspide de la Velocidad y el Lujo",
+    image: "/images/bugatti-chiron.jpg",
+    color: "#3B82F6",
+  },
+];
+
 export function CatalogView({ initialProducts }: CatalogViewProps) {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [hasHydrated, setHasHydrated] = useState(false);
   const [activeFilter, setActiveFilter] = useState<"all" | "ferrari" | "lamborghini" | "bugatti">("all");
+  const [currentSlide, setCurrentSlide] = useState(0);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const cartButtonRef = useRef<HTMLButtonElement>(null);
@@ -29,12 +55,38 @@ export function CatalogView({ initialProducts }: CatalogViewProps) {
     setHasHydrated(true);
   }, []);
 
-  // GSAP Entrance Animations
+  // Sync activeFilter with slider slide index
   useEffect(() => {
+    if (activeFilter === "ferrari") {
+      setCurrentSlide(0);
+    } else if (activeFilter === "lamborghini") {
+      setCurrentSlide(1);
+    } else if (activeFilter === "bugatti") {
+      setCurrentSlide(2);
+    }
+  }, [activeFilter]);
+
+  // Auto-rotate slides only if "All" is active
+  useEffect(() => {
+    if (activeFilter !== "all" || !hasHydrated) return;
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % slidesData.length);
+    }, 6000);
+    return () => clearInterval(interval);
+  }, [activeFilter, hasHydrated]);
+
+  // Register GSAP ScrollTrigger and run animations
+  useEffect(() => {
+    if (!hasHydrated) return;
+
+    if (typeof window !== "undefined") {
+      gsap.registerPlugin(ScrollTrigger);
+    }
+
     const ctx = gsap.context(() => {
       const tl = gsap.timeline();
 
-      // 1. Slide & Fade in the Navbar
+      // 1. Navbar entrance
       tl.from(".animate-nav", {
         opacity: 0,
         y: -20,
@@ -42,17 +94,16 @@ export function CatalogView({ initialProducts }: CatalogViewProps) {
         ease: "power3.out",
       });
 
-      // 2. Animate Hero Header Section items in a stagger
+      // 2. Banner entrance
       tl.from(
-        ".animate-hero-item",
+        ".animate-banner",
         {
           opacity: 0,
-          y: 40,
+          scale: 0.98,
           duration: 1.2,
-          stagger: 0.15,
-          ease: "power4.out",
+          ease: "power3.out",
         },
-        "-=0.5"
+        "-=0.4"
       );
 
       // 3. Staggered reveal of Catalog Header and Filters
@@ -67,10 +118,37 @@ export function CatalogView({ initialProducts }: CatalogViewProps) {
         },
         "-=0.6"
       );
+
+      // Scroll-based Parallax Effect for Background Images
+      gsap.utils.toArray(".parallax-bg").forEach((bg: any) => {
+        gsap.to(bg, {
+          yPercent: 15,
+          ease: "none",
+          scrollTrigger: {
+            trigger: ".banner-container",
+            start: "top top",
+            end: "bottom top",
+            scrub: true,
+          },
+        });
+      });
+
+      // Scroll-based Parallax Effect for Content / Text
+      gsap.to(".parallax-text", {
+        yPercent: -20,
+        ease: "none",
+        scrollTrigger: {
+          trigger: ".banner-container",
+          start: "top top",
+          end: "bottom top",
+          scrub: true,
+        },
+      });
+
     }, containerRef);
 
     return () => ctx.revert();
-  }, []);
+  }, [hasHydrated]);
 
   // GSAP Cart Button Micro-interaction on add-to-cart
   useEffect(() => {
@@ -96,10 +174,7 @@ export function CatalogView({ initialProducts }: CatalogViewProps) {
   // Brand Filtering
   const filteredProducts = initialProducts.filter((product) => {
     if (activeFilter === "all") return true;
-    if (activeFilter === "lamborghini") {
-      return product.name.toLowerCase().includes("lamborghini") || product.name.toLowerCase().includes("lambo");
-    }
-    return product.name.toLowerCase().includes(activeFilter);
+    return (product.brand || "").toLowerCase() === activeFilter;
   });
 
   return (
@@ -108,13 +183,13 @@ export function CatalogView({ initialProducts }: CatalogViewProps) {
       className="min-h-screen flex flex-col justify-between bg-neutral-950 relative overflow-hidden font-sans select-none"
     >
       {/* Premium ambient top-glow gradient (Ferrari, Lamborghini, Bugatti brand lights merged) */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1200px] h-[400px] bg-[radial-gradient(ellipse_at_top,rgba(255,204,0,0.05),rgba(224,30,38,0.03),rgba(10,70,228,0.03),transparent)] pointer-events-none -z-10 filter blur-3xl" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1200px] h-[400px] bg-[radial-gradient(ellipse_at_top,rgba(255,204,0,0.04),rgba(224,30,38,0.02),rgba(10,70,228,0.02),transparent)] pointer-events-none -z-10 filter blur-3xl" />
       
       {/* Subtle background grid pattern */}
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.012)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.012)_1px,transparent_1px)] bg-[size:50px_50px] pointer-events-none -z-20" />
+      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.01)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.01)_1px,transparent_1px)] bg-[size:60px_60px] pointer-events-none -z-20" />
 
       {/* Header / Navbar */}
-      <header className="animate-nav sticky top-0 z-40 w-full border-b border-white/5 bg-neutral-950/60 backdrop-blur-md">
+      <header className="animate-nav sticky top-0 z-40 w-full border-b border-white/5 bg-neutral-950/65 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <span className="text-xl font-bold tracking-[0.25em] text-white font-mono uppercase bg-clip-text text-transparent bg-gradient-to-r from-white via-neutral-100 to-neutral-400">
@@ -143,26 +218,84 @@ export function CatalogView({ initialProducts }: CatalogViewProps) {
       </header>
 
       {/* Main Catalog View */}
-      <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20 relative z-10">
-        {/* Hero Section */}
-        <section className="mb-20 max-w-3xl">
-          <div className="animate-hero-item inline-flex items-center gap-2 px-3 py-1 rounded-full border border-amber-500/20 bg-amber-500/5 text-amber-400 text-[10px] font-mono mb-6 tracking-wider uppercase font-medium">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
-            </span>
-            Colección de Élite
+      <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16 relative z-10">
+        
+        {/* PARALLAX SLIDESHOW BANNER */}
+        <section className="animate-banner banner-container relative w-full h-[55vh] sm:h-[65vh] rounded-3xl overflow-hidden border border-white/5 mb-16 shadow-2xl">
+          <div className="absolute inset-0">
+            {slidesData.map((slide, idx) => {
+              const isActive = idx === currentSlide;
+              return (
+                <div
+                  key={slide.brand}
+                  className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
+                    isActive ? "opacity-100 z-10" : "opacity-0 z-0 pointer-events-none"
+                  }`}
+                >
+                  {/* Background Image with parallax layout */}
+                  <div className="absolute inset-0 overflow-hidden">
+                    <div
+                      className="parallax-bg w-full h-[120%] bg-cover bg-center"
+                      style={{ 
+                        backgroundImage: `url(${slide.image})`,
+                        transform: "translateY(-10%)"
+                      }}
+                    />
+                    {/* Shadow Gradient Overlays for luxury text legibility */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-neutral-950 via-neutral-950/50 to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-neutral-950/80 via-neutral-950/10 to-transparent" />
+                  </div>
+
+                  {/* Floating Content */}
+                  <div className="absolute inset-x-0 bottom-0 top-0 max-w-5xl mx-auto px-6 sm:px-12 flex flex-col justify-end pb-12 sm:pb-16 relative z-20">
+                    <div className="parallax-text max-w-xl">
+                      <span
+                        className="text-[10px] font-mono tracking-[0.35em] uppercase block mb-3.5 font-bold"
+                        style={{ color: slide.color }}
+                      >
+                        {slide.subtitle}
+                      </span>
+                      <h2 className="text-5xl sm:text-6xl md:text-7xl font-black font-heading tracking-tight leading-none text-white uppercase select-none">
+                        {slide.title}
+                      </h2>
+                      <button
+                        onClick={() => {
+                          setActiveFilter(slide.brand as any);
+                          // Smooth scroll to catalog section
+                          document.getElementById("catalog-section")?.scrollIntoView({ behavior: "smooth" });
+                        }}
+                        className="mt-6 px-5 py-3 rounded-xl border border-white/10 hover:border-white/20 bg-white/[0.02] hover:bg-white/[0.05] text-[10px] font-mono uppercase tracking-widest text-neutral-250 hover:text-white transition-all transform active:scale-95 cursor-pointer flex items-center gap-1.5"
+                      >
+                        <span>Ver Colección</span>
+                        <ChevronRight className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
           </div>
-          <h1 className="animate-hero-item text-5xl sm:text-6xl md:text-7xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-b from-white via-neutral-100 to-neutral-450 leading-[0.95] font-heading uppercase">
-            VAULT HYPERCARS
-          </h1>
-          <p className="animate-hero-item mt-6 text-sm sm:text-base text-neutral-400 leading-relaxed font-sans max-w-2xl">
-            Acceso exclusivo al sanctum sanctorum de la ingeniería automotriz. Una selección de hiperdeportivos de alta gama de <span className="text-red-400 font-semibold">Ferrari</span>, <span className="text-amber-400 font-semibold">Lamborghini</span> y <span className="text-blue-400 font-semibold">Bugatti</span>. Rendimiento extremo, legados inigualables y diseño de vanguardia.
-          </p>
+
+          {/* Dots Indicator Controls */}
+          <div className="absolute bottom-6 right-8 z-30 flex gap-2">
+            {slidesData.map((slide, idx) => (
+              <button
+                key={idx}
+                onClick={() => {
+                  setCurrentSlide(idx);
+                  setActiveFilter(slide.brand as any);
+                }}
+                className={`h-1.5 rounded-full transition-all duration-500 cursor-pointer ${
+                  idx === currentSlide ? "w-8 bg-white" : "w-2 bg-white/30 hover:bg-white/50"
+                }`}
+                aria-label={`Mostrar slide ${idx + 1}`}
+              />
+            ))}
+          </div>
         </section>
 
-        {/* Brand Filters */}
-        <section className="mb-12">
+        {/* Catalog Section */}
+        <section id="catalog-section" className="scroll-mt-24">
           <div className="animate-catalog-item flex flex-wrap gap-2.5 mb-10 border-b border-white/5 pb-6">
             {["all", "ferrari", "lamborghini", "bugatti"].map((filter) => {
               const isActive = activeFilter === filter;

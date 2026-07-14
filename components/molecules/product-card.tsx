@@ -6,11 +6,14 @@ import { Plus, Check, ShoppingCart } from "lucide-react";
 import Image from "next/image";
 import { useRef, useState } from "react";
 import { gsap } from "gsap";
+import { formatPrice } from "@/lib/utils";
 
 export interface ProductCardProps {
   product: {
     id: string;
     name: string;
+    brand: string;
+    currency: string;
     description: string;
     price: number;
     images: string[];
@@ -24,10 +27,10 @@ export function ProductCard({ product }: ProductCardProps) {
   const [isAdded, setIsAdded] = useState(false);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
-  // Brand detection helper
+  // Brand detection based on database brand field
   const getBrandDetails = () => {
-    const lowerName = product.name.toLowerCase();
-    if (lowerName.includes("ferrari")) {
+    const activeBrand = (product.brand || "").toLowerCase();
+    if (activeBrand === "ferrari") {
       return {
         id: "ferrari" as const,
         name: "Ferrari",
@@ -37,7 +40,7 @@ export function ProductCard({ product }: ProductCardProps) {
         btnAddedBg: "bg-emerald-600 text-white shadow-emerald-600/10",
       };
     }
-    if (lowerName.includes("lamborghini") || lowerName.includes("lambo")) {
+    if (activeBrand === "lamborghini" || activeBrand === "lambo") {
       return {
         id: "lamborghini" as const,
         name: "Lamborghini",
@@ -47,7 +50,7 @@ export function ProductCard({ product }: ProductCardProps) {
         btnAddedBg: "bg-emerald-500 text-neutral-950 shadow-emerald-500/10",
       };
     }
-    if (lowerName.includes("bugatti")) {
+    if (activeBrand === "bugatti") {
       return {
         id: "bugatti" as const,
         name: "Bugatti",
@@ -145,8 +148,8 @@ export function ProductCard({ product }: ProductCardProps) {
             <span className="text-[9px] text-neutral-500 uppercase tracking-widest font-mono font-medium">
               Precio
             </span>
-            <span className="text-base font-bold text-neutral-100 font-mono mt-0.5">
-              ${product.price.toLocaleString("es-ES", { minimumFractionDigits: 2 })}
+            <span className="text-base font-bold text-white font-mono mt-0.5">
+              {formatPrice(product.price, product.currency)}
             </span>
           </div>
 

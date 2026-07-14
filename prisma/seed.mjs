@@ -22,9 +22,11 @@ const prisma = new PrismaClient({ adapter });
 async function main() {
   console.log("Cleaning database and setting up system records...");
   
-  // Clear any existing products to prevent duplicates during seeding
+  // Clear any existing order items, orders, and products to prevent FK violations
+  await prisma.orderItem.deleteMany({});
+  await prisma.order.deleteMany({});
   await prisma.product.deleteMany({});
-  console.log("Products table cleared.");
+  console.log("Products and orders tables cleared.");
 
   // Seed default admin user if not exists (so admin panel is accessible)
   const defaultUserId = "00000000-0000-0000-0000-000000000000";
@@ -43,6 +45,8 @@ async function main() {
   const hypercars = [
     {
       name: "Ferrari SF90 Stradale",
+      brand: "ferrari",
+      currency: "USD",
       description: "El primer híbrido enchufable de Ferrari, que ofrece 1000 CV de potencia combinada de un motor V8 turboalimentado y tres motores eléctricos. Una obra maestra de la aerodinámica y la ingeniería de Maranello.",
       price: 524000.00,
       stock: 5,
@@ -51,14 +55,18 @@ async function main() {
     },
     {
       name: "Lamborghini Revuelto",
+      brand: "lamborghini",
+      currency: "CLP",
       description: "El primer superdeportivo híbrido V12 enchufable HPEV (High Performance Electrified Vehicle). Combina un motor V12 de aspiración natural con tres motores eléctricos para desatar 1015 CV.",
-      price: 608000.00,
+      price: 608000000.00,
       stock: 3,
       images: ["/images/lambo-revuelto.jpg"],
       isActive: true,
     },
     {
       name: "Bugatti Chiron Super Sport",
+      brand: "bugatti",
+      currency: "EUR",
       description: "La cúspide de la velocidad y el lujo. Impulsado por el legendario motor W16 de 8.0 litros con cuatro turbocompresores, que produce 1600 CV de pura potencia y confort inigualable.",
       price: 3900000.00,
       stock: 2,

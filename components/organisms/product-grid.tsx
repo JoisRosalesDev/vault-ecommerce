@@ -6,6 +6,8 @@ import { ProductCard } from "@/components/molecules/product-card";
 export interface Product {
   id: string;
   name: string;
+  brand: string;
+  currency: string;
   description: string;
   price: number;
   images: string[];

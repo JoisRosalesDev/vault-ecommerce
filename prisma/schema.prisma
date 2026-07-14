@@ -31,8 +31,10 @@ model User {
 model Product {
   id          String      @id @default(uuid()) @db.Uuid
   name        String
+  brand       String      @default("Other")
+  currency    String      @default("USD")
   description String
-  price       Decimal     @db.Decimal(10, 2)
+  price       Decimal     @db.Decimal(16, 2)
   stock       Int         @default(0)
   images      String[]    
   isActive    Boolean     @default(true)

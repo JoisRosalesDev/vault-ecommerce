@@ -9,7 +9,7 @@ export async function PUT(
   try {
     const { id } = await params;
     const body = await request.json();
-    const { name, description, price, stock, images, isActive } = body;
+    const { name, description, price, stock, images, isActive, brand, currency } = body;
 
     // Validate inputs
     if (price !== undefined && Number(price) < 0) {
@@ -31,6 +31,8 @@ export async function PUT(
       where: { id },
       data: {
         ...(name && { name }),
+        ...(brand && { brand }),
+        ...(currency && { currency }),
         ...(description && { description }),
         ...(price !== undefined && { price: Number(price) }),
         ...(stock !== undefined && { stock: Number(stock) }),

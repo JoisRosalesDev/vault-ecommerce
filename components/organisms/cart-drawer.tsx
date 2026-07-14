@@ -1,9 +1,8 @@
-"use client";
-
 import { useCartStore } from "@/hooks/useCartStore";
 import { X, Plus, Minus, Trash2, ShoppingBag, AlertCircle } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { formatPrice } from "@/lib/utils";
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -15,7 +14,7 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
   const [isCheckoutLoading, setIsCheckoutLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  const { items, removeItem, updateQuantity, getTotalAmount } = useCartStore();
+  const { items, removeItem, updateQuantity } = useCartStore();
 
   // Guard hydration mismatch in Next.js Server Side Rendering
   useEffect(() => {
@@ -92,6 +91,19 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
     }
   };
 
+  // Group items by currency for subtotal calculations
+  const getSubtotals = () => {
+    const subtotals: Record<string, number> = {};
+    items.forEach((item) => {
+      const cur = item.currency || "USD";
+      subtotals[cur] = (subtotals[cur] || 0) + item.price * item.quantity;
+    });
+    return Object.entries(subtotals).map(([currency, amount]) => ({
+      currency,
+      amount,
+    }));
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -165,7 +177,7 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                           {item.name}
                         </h3>
                         <p className="text-xs font-mono text-neutral-400 mt-1">
-                          ${item.price.toLocaleString("es-ES", { minimumFractionDigits: 2 })}
+                          {formatPrice(item.price, item.currency)}
                         </p>
                       </div>
 
@@ -210,11 +222,15 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
           {/* Footer checkout area */}
           {hasHydrated && items.length > 0 && (
             <div className="border-t border-neutral-800 px-6 py-6 bg-neutral-900/60 backdrop-blur-xs">
-              <div className="flex justify-between text-base font-medium text-white mb-6">
-                <span className="text-neutral-400 font-normal">Subtotal</span>
-                <span className="font-mono text-lg font-bold">
-                  ${getTotalAmount().toLocaleString("es-ES", { minimumFractionDigits: 2 })}
-                </span>
+              <div className="flex justify-between items-start text-base font-medium text-white mb-6">
+                <span className="text-neutral-400 font-normal mt-1">Subtotal</span>
+                <div className="flex flex-col items-end gap-1.5">
+                  {getSubtotals().map(({ currency, amount }) => (
+                    <span key={currency} className="font-mono text-lg font-bold text-white">
+                      {formatPrice(amount, currency)}
+                    </span>
+                  ))}
+                </div>
               </div>
 
               <button
