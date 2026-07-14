@@ -3,7 +3,6 @@
 import { Skeleton } from "@/components/atoms/skeleton";
 import { Plus, Edit2, Trash2, X, AlertCircle } from "lucide-react";
 import { useEffect, useState } from "react";
-import { uploadProductImage } from "@/lib/supabase";
 import { formatPrice } from "@/lib/utils";
 
 interface Product {
@@ -92,19 +91,26 @@ export default function AdminProductsPage() {
 
     let finalImageUrl = imageUrl;
 
-    // Handle Image Upload to Supabase Storage if a local file is chosen
+    // Handle Image Upload to our server API route (bypasses browser RLS policies)
     if (imageFile) {
       try {
-        const uniqueFileName = `product-${Date.now()}-${imageFile.name.replace(/\s+/g, "_")}`;
-        const uploadedUrl = await uploadProductImage(imageFile, uniqueFileName);
-        if (!uploadedUrl) {
-          throw new Error("No se pudo subir la imagen a Supabase Storage.");
+        const formData = new FormData();
+        formData.append("file", imageFile);
+
+        const uploadResponse = await fetch("/api/admin/upload", {
+          method: "POST",
+          body: formData,
+        });
+
+        const uploadData = await uploadResponse.json();
+        if (!uploadResponse.ok) {
+          throw new Error(uploadData.error || "No se pudo subir la imagen del auto.");
         }
-        finalImageUrl = uploadedUrl;
+        finalImageUrl = uploadData.url;
       } catch (err) {
         console.error(err);
         const error = err as Error;
-        setErrorMsg(error.message || "Error al cargar la imagen del dispositivo.");
+        setErrorMsg(error.message || "Error al cargar la imagen en el servidor.");
         setIsSubmitting(false);
         return;
       }
