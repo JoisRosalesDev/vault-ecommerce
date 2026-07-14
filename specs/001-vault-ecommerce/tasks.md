@@ -136,3 +136,12 @@
 - [x] T030 Add advanced GSAP animations and card-stagger timelines per plan: gsap-core (partial)
 - [x] T031 Integrate discreet admin login entry point in client layout footer per US3/AC: Admin accessibility (missing)
 - [x] T032 Remove default products seed data to start with empty catalog and manual admin entry per plan: data seeding (contradicts)
+
+## Phase 8: Convergence
+
+**Purpose**: Resolve product image loading issue and refine hero banner layout and animations.
+
+- [x] T033 Configure remote pattern for Supabase Storage in next.config.ts to resolve 400 Bad Request error per FR-005 (partial)
+- [x] T034 Restyle hero catalog banner to be full-width, borderless, and marginless, and implement brand-distinctive layouts and advanced GSAP parallax transition animations per A-005 (partial)
+- [x] T035 Decouple hero slideshow scroll/navigation from catalog product filtering per user instruction (partial)
+- [x] T036 Separate hero slideshow from catalog grid with a distinct full-width container featuring a detailed brand-specific mesh gradient background per user instruction (partial)
