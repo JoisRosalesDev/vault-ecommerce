@@ -2,21 +2,67 @@
 
 import { supabase } from "@/lib/supabase";
 import { Lock, LogIn } from "lucide-react";
-import { useState, Suspense } from "react";
-import { useSearchParams } from "next/navigation";
+import { useState, Suspense, useEffect } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 
 function AdminLoginForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const searchParams = useSearchParams();
   const errorParam = searchParams.get("error");
+  const router = useRouter();
+
+  useEffect(() => {
+    // Listen to Supabase Auth state changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if ((event === "SIGNED_IN" || event === "USER_UPDATED") && session) {
+        setIsLoading(true);
+        try {
+          // Set access token cookie for edge middleware protection
+          document.cookie = `sb-access-token=${session.access_token}; path=/; max-age=${session.expires_in}; SameSite=Lax; Secure`;
+
+          // Sync user session to local database and assign role
+          await fetch("/api/auth/sync", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              id: session.user.id,
+              email: session.user.email,
+            }),
+          });
+
+          router.push("/admin/products");
+        } catch (err) {
+          console.error("Auth sync handler failed:", err);
+          setErrorMsg("Error al sincronizar la cuenta de administrador.");
+          setIsLoading(false);
+        }
+      }
+    });
+
+    // Check if session already exists on load
+    const checkActiveSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        document.cookie = `sb-access-token=${session.access_token}; path=/; max-age=${session.expires_in}; SameSite=Lax; Secure`;
+        router.push("/admin/products");
+      }
+    };
+    checkActiveSession();
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [router]);
 
   const handleGoogleLogin = async () => {
     setIsLoading(true);
     setErrorMsg(null);
 
     try {
-      const redirectUrl = `${window.location.origin}/api/auth/callback`;
+      const redirectUrl = `${window.location.origin}/admin/login`;
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
