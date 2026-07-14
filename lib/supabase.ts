@@ -21,7 +21,13 @@ if (!isValidUrl(supabaseUrl) || !supabaseAnonKey || supabaseAnonKey.includes("..
   console.warn("Supabase public environment variables are missing or placeholders.");
 }
 
-export const supabase = createClient(finalUrl, finalAnonKey);
+export const supabase = createClient(finalUrl, finalAnonKey, {
+  auth: {
+    flowType: "pkce",
+    persistSession: true,
+    detectSessionInUrl: true,
+  },
+});
 
 export async function uploadProductImage(file: File, path: string): Promise<string | null> {
   try {
