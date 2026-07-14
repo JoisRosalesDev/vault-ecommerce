@@ -5,6 +5,22 @@ const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
 const LIMIT_WINDOW = 60 * 1000;
 const MAX_AUTH_REQUESTS = 10;
 
+function parseJwt(token: string) {
+  try {
+    const base64Url = token.split(".")[1];
+    const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+    const jsonPayload = decodeURIComponent(
+      atob(base64)
+        .split("")
+        .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+        .join("")
+    );
+    return JSON.parse(jsonPayload);
+  } catch {
+    return null;
+  }
+}
+
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
@@ -40,6 +56,17 @@ export async function proxy(request: NextRequest) {
     if (!accessToken) {
       const loginUrl = new URL("/admin/login", request.url);
       return NextResponse.redirect(loginUrl);
+    }
+
+    const payload = parseJwt(accessToken);
+    const userEmail = payload?.email;
+    const adminEmail = process.env.ADMIN_EMAIL || "admin@vault.com";
+
+    // Enforce Admin email matches the config
+    if (!userEmail || userEmail.toLowerCase() !== adminEmail.toLowerCase()) {
+      const response = NextResponse.redirect(new URL("/admin/login?error=unauthorized", request.url));
+      response.cookies.delete("sb-access-token");
+      return response;
     }
   }
 

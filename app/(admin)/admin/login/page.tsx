@@ -2,11 +2,14 @@
 
 import { supabase } from "@/lib/supabase";
 import { Lock, LogIn } from "lucide-react";
-import { useState } from "react";
+import { useState, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 
-export default function AdminLoginPage() {
+function AdminLoginForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const searchParams = useSearchParams();
+  const errorParam = searchParams.get("error");
 
   const handleGoogleLogin = async () => {
     setIsLoading(true);
@@ -34,6 +37,15 @@ export default function AdminLoginPage() {
     }
   };
 
+  let displayError = errorMsg;
+  if (!displayError) {
+    if (errorParam === "unauthorized") {
+      displayError = "Acceso denegado. Esta cuenta de Google no está autorizada para administrar VAULT.";
+    } else if (errorParam === "auth_failed") {
+      displayError = "Fallo de autenticación. Por favor, intente iniciar sesión de nuevo.";
+    }
+  }
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-neutral-950 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full bg-neutral-900 border border-neutral-800/80 rounded-2xl p-8 md:p-12 shadow-2xl flex flex-col items-center">
@@ -45,16 +57,16 @@ export default function AdminLoginPage() {
         <span className="text-xs uppercase tracking-widest font-mono text-neutral-500">
           Acceso Privado
         </span>
-        <h1 className="mt-3 text-2xl font-bold tracking-tight text-white leading-tight text-center">
+        <h1 className="mt-3 text-2xl font-bold tracking-tight text-white leading-tight text-center font-heading">
           Administración VAULT
         </h1>
-        <p className="mt-2 text-sm text-neutral-400 text-center leading-relaxed max-w-[280px]">
+        <p className="mt-2 text-xs text-neutral-400 text-center leading-relaxed max-w-[280px]">
           Inicie sesión con su cuenta autorizada para gestionar el catálogo.
         </p>
 
-        {errorMsg && (
-          <div className="w-full mt-6 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-xs text-center">
-            {errorMsg}
+        {displayError && (
+          <div className="w-full mt-6 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-xs text-center leading-relaxed">
+            {displayError}
           </div>
         )}
 
@@ -68,5 +80,17 @@ export default function AdminLoginPage() {
         </button>
       </div>
     </div>
+  );
+}
+
+export default function AdminLoginPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-neutral-950 text-neutral-400 font-mono text-xs">
+        Cargando portal...
+      </div>
+    }>
+      <AdminLoginForm />
+    </Suspense>
   );
 }
