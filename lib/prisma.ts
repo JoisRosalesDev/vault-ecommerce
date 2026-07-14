@@ -17,6 +17,11 @@ function getConnectionString(): string {
   if (url.startsWith("prisma+postgres://")) {
     return "postgres://postgres:postgres@localhost:51214/template1?sslmode=disable";
   }
+  // Check if it is a placeholder
+  if (url.includes("[ref]") || url.includes("[password]") || url.includes("[region]")) {
+    console.warn("DATABASE_URL contains placeholder values. Using local placeholder connection string.");
+    return "postgresql://postgres:postgres@localhost:5432/postgres";
+  }
   return url;
 }
 

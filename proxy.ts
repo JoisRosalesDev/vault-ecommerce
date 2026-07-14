@@ -6,7 +6,7 @@ const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
 const LIMIT_WINDOW = 60 * 1000; // 1 minute
 const MAX_AUTH_REQUESTS = 10; // Max 10 logins per minute
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // 1. Rate-limiting for auth callback endpoints (G1 requirement)
@@ -54,7 +54,7 @@ export async function middleware(request: NextRequest) {
   return NextResponse.next();
 }
 
-// Map the middleware matchers
+// Map the proxy matchers
 export const config = {
   matcher: ["/admin/:path*", "/api/auth/callback"],
 };
