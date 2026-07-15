@@ -5,6 +5,9 @@ import { revalidatePath } from "next/cache";
 export async function GET() {
   try {
     const products = await prisma.product.findMany({
+      where: {
+        isDeleted: false,
+      },
       orderBy: {
         createdAt: "desc",
       },

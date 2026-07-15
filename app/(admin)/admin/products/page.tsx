@@ -262,7 +262,7 @@ export default function AdminProductsPage() {
                   <td className="py-5 px-6 font-mono text-neutral-900 dark:text-neutral-300 font-bold">
                     {formatPrice(product.price, product.currency)}
                   </td>
-                  <td className="py-5 px-6 font-mono text-neutral-700 dark:text-neutral-350 font-bold">
+                  <td className="py-5 px-6 font-mono text-neutral-700 dark:text-neutral-300 font-bold">
                     {product.stock}
                   </td>
                   <td className="py-5 px-6">
@@ -280,14 +280,14 @@ export default function AdminProductsPage() {
                     <div className="flex items-center justify-end gap-3">
                       <button
                         onClick={() => openEditModal(product)}
-                        className="p-2 border-2 border-neutral-950 dark:border-white bg-white dark:bg-neutral-850 hover:bg-neutral-950 hover:text-white dark:hover:bg-white dark:hover:text-neutral-950 transition-all active:translate-x-[1px] active:translate-y-[1px] shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] dark:shadow-[2px_2px_0px_0px_rgba(255,255,255,1)] active:shadow-none cursor-pointer"
+                        className="p-2 border-2 border-neutral-950 dark:border-white bg-white dark:bg-neutral-900 text-neutral-950 dark:text-white hover:bg-neutral-950 hover:text-white dark:hover:bg-white dark:hover:text-neutral-950 transition-all active:translate-x-[1px] active:translate-y-[1px] shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] dark:shadow-[2px_2px_0px_0px_rgba(255,255,255,1)] active:shadow-none cursor-pointer"
                         aria-label="Editar"
                       >
                         <Edit2 className="w-3.5 h-3.5 stroke-[2.5]" />
                       </button>
                       <button
                         onClick={() => handleDelete(product.id)}
-                        className="p-2 border-2 border-neutral-950 dark:border-white bg-white dark:bg-neutral-850 hover:bg-red-650 hover:text-white dark:hover:bg-red-600 dark:hover:text-white transition-all active:translate-x-[1px] active:translate-y-[1px] shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] dark:shadow-[2px_2px_0px_0px_rgba(255,255,255,1)] active:shadow-none cursor-pointer"
+                        className="p-2 border-2 border-neutral-950 dark:border-white bg-white dark:bg-neutral-900 text-neutral-950 dark:text-white hover:bg-red-650 hover:text-white dark:hover:bg-red-600 dark:hover:text-white transition-all active:translate-x-[1px] active:translate-y-[1px] shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] dark:shadow-[2px_2px_0px_0px_rgba(255,255,255,1)] active:shadow-none cursor-pointer"
                         aria-label="Eliminar"
                       >
                         <Trash2 className="w-3.5 h-3.5 stroke-[2]" />
@@ -403,7 +403,7 @@ export default function AdminProductsPage() {
                   <label className="flex flex-col items-center justify-center w-full h-28 border-2 border-dashed border-neutral-950 dark:border-white/40 bg-neutral-50 dark:bg-neutral-950 hover:bg-neutral-100 dark:hover:bg-neutral-900 transition-all rounded-none cursor-pointer text-center">
                     <div className="flex flex-col items-center justify-center px-4 py-3">
                       <Plus className="w-5 h-5 text-neutral-500 mb-1" />
-                      <p className="text-xs text-neutral-650 dark:text-neutral-400 truncate max-w-xs font-bold font-sans uppercase">
+                      <p className="text-xs text-neutral-600 dark:text-neutral-400 truncate max-w-xs font-bold font-sans uppercase">
                         {imageFile ? imageFile.name : "Seleccionar desde el dispositivo"}
                       </p>
                       <p className="mt-0.5 text-[9px] text-neutral-400 dark:text-neutral-500 font-mono">JPG, PNG, WEBP</p>
@@ -422,7 +422,7 @@ export default function AdminProductsPage() {
                   
                   {(imageUrl || imageFile) && (
                     <div className="flex items-center gap-3.5 p-3 border-2 border-neutral-950 dark:border-white/20 bg-neutral-50 dark:bg-neutral-950/40 rounded-none">
-                      <div className="relative w-12 h-12 rounded-none overflow-hidden bg-black flex-shrink-0 border border-neutral-350 dark:border-neutral-800">
+                      <div className="relative w-12 h-12 rounded-none overflow-hidden bg-black flex-shrink-0 border border-neutral-300 dark:border-neutral-800">
                         <img
                           src={imageFile ? URL.createObjectURL(imageFile) : imageUrl}
                           alt="Vista previa"
@@ -430,7 +430,7 @@ export default function AdminProductsPage() {
                         />
                       </div>
                       <div className="flex-grow min-w-0">
-                        <p className="text-[10px] font-mono text-neutral-550 dark:text-neutral-400 truncate font-bold">
+                        <p className="text-[10px] font-mono text-neutral-500 dark:text-neutral-400 truncate font-bold">
                           {imageFile ? imageFile.name : "Imagen cargada"}
                         </p>
                       </div>

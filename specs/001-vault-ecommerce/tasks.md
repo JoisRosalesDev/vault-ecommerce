@@ -165,3 +165,6 @@
 - [x] T044 Refactor the admin dashboard layouts and forms (AdminLayout and AdminProductsPage components) to match the Brutalist Modern layout and support light/dark modes per user request (contradicts)
 - [x] T045 Implement a functional light/dark mode theme toggle button in the main catalog navbar with persistence to localStorage per user request (missing)
 - [x] T046 Refine responsiveness details (mobile-friendly spacing, card grid, and layout responsiveness) across all views per user request (partial)
+- [x] T047 Optimize icons and elements in admin pages for dark mode by using standard Tailwind colors (completed)
+- [x] T048 Fix deleted product listing persistence to filter out soft-deleted products from both client and admin views (completed)
+- [x] T049 Integrate dark mode theme toggle button into the admin dashboard navigation header (completed)

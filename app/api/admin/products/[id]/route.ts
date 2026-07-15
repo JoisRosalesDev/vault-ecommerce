@@ -70,10 +70,10 @@ export async function DELETE(
     });
 
     if (orderItemsCount > 0) {
-      // Soft delete: Set isActive = false to preserve client purchase history
+      // Soft delete: Set isActive = false and isDeleted = true to preserve client purchase history
       const product = await prisma.product.update({
         where: { id },
-        data: { isActive: false },
+        data: { isActive: false, isDeleted: true },
       });
 
       // Invalidate static cache

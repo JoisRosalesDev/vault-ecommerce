@@ -69,7 +69,7 @@ export async function POST(request: Request) {
     // For simplicity, we fetch all referenced products
     const productIds = items.map((i) => i.productId);
     const dbProducts = await prisma.product.findMany({
-      where: { id: { in: productIds }, isActive: true },
+      where: { id: { in: productIds }, isActive: true, isDeleted: false },
     });
 
     for (const item of items) {

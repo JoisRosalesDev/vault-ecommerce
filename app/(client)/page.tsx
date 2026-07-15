@@ -8,6 +8,7 @@ async function getProducts() {
     const products = await prisma.product.findMany({
       where: {
         isActive: true,
+        isDeleted: false,
       },
       orderBy: {
         createdAt: "desc",

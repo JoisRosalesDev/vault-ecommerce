@@ -38,6 +38,7 @@ model Product {
   stock       Int         @default(0)
   images      String[]    
   isActive    Boolean     @default(true)
+  isDeleted   Boolean     @default(false)
   orderItems  OrderItem[]
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt

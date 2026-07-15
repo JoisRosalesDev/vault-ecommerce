@@ -1,10 +1,10 @@
 "use client";
 
 import { supabase } from "@/lib/supabase";
-import { LogOut, FolderKanban } from "lucide-react";
+import { LogOut, FolderKanban, Sun, Moon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function AdminLayout({
   children,
@@ -13,6 +13,28 @@ export default function AdminLayout({
 }) {
   const router = useRouter();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [theme, setTheme] = useState<"light" | "dark">("dark");
+
+  useEffect(() => {
+    const savedTheme = (localStorage.getItem("theme") as "light" | "dark") || "dark";
+    setTheme(savedTheme);
+    if (savedTheme === "dark") {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  }, []);
+
+  const toggleTheme = () => {
+    const nextTheme = theme === "dark" ? "light" : "dark";
+    setTheme(nextTheme);
+    localStorage.setItem("theme", nextTheme);
+    if (nextTheme === "dark") {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  };
 
   const handleSignOut = async () => {
     setIsLoggingOut(true);
@@ -52,15 +74,26 @@ export default function AdminLayout({
             </nav>
           </div>
 
-          <button
-            onClick={handleSignOut}
-            disabled={isLoggingOut}
-            className="flex items-center gap-2 px-4 py-2 border-2 border-neutral-950 dark:border-white bg-white dark:bg-neutral-950 text-neutral-950 dark:text-white hover:bg-red-600 hover:text-white dark:hover:bg-red-650 dark:hover:text-white transition-all duration-100 active:translate-x-[2px] active:translate-y-[2px] shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] dark:shadow-[2px_2px_0px_0px_rgba(255,255,255,1)] active:shadow-none font-mono font-bold text-xs uppercase cursor-pointer disabled:opacity-50"
-            aria-label="Cerrar sesión"
-          >
-            <LogOut className="w-4 h-4 stroke-[2.5]" />
-            <span>{isLoggingOut ? "Cerrando..." : "Salir"}</span>
-          </button>
+          <div className="flex items-center gap-3">
+            {/* Theme Toggle Button */}
+            <button
+              onClick={toggleTheme}
+              className="relative p-2.5 border-2 border-neutral-950 dark:border-white bg-white dark:bg-neutral-900 text-neutral-950 dark:text-white hover:bg-neutral-950 hover:text-white dark:hover:bg-white dark:hover:text-neutral-950 active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all duration-100 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] dark:shadow-[2px_2px_0px_0px_rgba(255,255,255,1)] cursor-pointer flex items-center justify-center rounded-none"
+              aria-label="Alternar tema"
+            >
+              {theme === "dark" ? <Sun className="w-4 h-4 stroke-[2.5]" /> : <Moon className="w-4 h-4 stroke-[2.5]" />}
+            </button>
+
+            <button
+              onClick={handleSignOut}
+              disabled={isLoggingOut}
+              className="flex items-center gap-2 px-4 py-2 border-2 border-neutral-950 dark:border-white bg-white dark:bg-neutral-950 text-neutral-950 dark:text-white hover:bg-red-650 hover:text-white dark:hover:bg-red-600 dark:hover:text-white transition-all duration-100 active:translate-x-[2px] active:translate-y-[2px] shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] dark:shadow-[2px_2px_0px_0px_rgba(255,255,255,1)] active:shadow-none font-mono font-bold text-xs uppercase cursor-pointer disabled:opacity-50"
+              aria-label="Cerrar sesión"
+            >
+              <LogOut className="w-4 h-4 stroke-[2.5]" />
+              <span className="hidden sm:inline">{isLoggingOut ? "Cerrando..." : "Salir"}</span>
+            </button>
+          </div>
         </div>
       </header>
 
