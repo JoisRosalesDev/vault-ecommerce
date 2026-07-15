@@ -30,7 +30,7 @@ export default function RootLayout({
       lang="es"
       className={`${outfit.variable} ${inter.variable} h-full antialiased`}
     >
-      <body className="min-h-full bg-neutral-950 text-neutral-100 flex flex-col font-sans selection:bg-amber-500/20 selection:text-amber-200">
+      <body className="min-h-full bg-background text-foreground flex flex-col font-sans transition-colors duration-200 selection:bg-amber-500/20 selection:text-amber-200">
         {children}
         <ToastContainer />
       </body>

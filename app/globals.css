@@ -128,3 +128,19 @@
     @apply font-sans;
   }
 }
+
+/* Brutalist Modern Animations and Utilities */
+.animate-brutal-pop {
+  animation: brutalPop 0.3s cubic-bezier(0.25, 1, 0.5, 1) both;
+}
+
+@keyframes brutalPop {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}

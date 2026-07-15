@@ -182,29 +182,29 @@ export default function AdminProductsPage() {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 text-neutral-950 dark:text-white">
       {/* Title Header */}
-      <div className="flex items-center justify-between pb-6 border-b border-neutral-900">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b-4 border-neutral-950 dark:border-white">
         <div>
-          <span className="text-xs uppercase tracking-widest font-mono text-neutral-500">
+          <span className="text-[10px] uppercase tracking-widest font-mono text-neutral-500 dark:text-neutral-400 font-bold">
             Inventario
           </span>
-          <h1 className="mt-2 text-3xl font-extrabold tracking-tight text-white">
+          <h1 className="mt-1 text-3xl lg:text-4xl font-black uppercase tracking-tight text-neutral-950 dark:text-white font-sans">
             Gestión de Productos
           </h1>
         </div>
 
         <button
           onClick={openCreateModal}
-          className="flex items-center gap-2 px-5 py-3 rounded-xl bg-neutral-100 hover:bg-white text-neutral-950 font-semibold transition-all transform active:scale-95 shadow-lg cursor-pointer"
+          className="flex items-center justify-center gap-2 px-5 py-3 border-2 border-neutral-950 dark:border-white rounded-none bg-amber-500 hover:bg-amber-400 text-neutral-950 font-black uppercase tracking-widest text-xs shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] dark:shadow-[3px_3px_0px_0px_rgba(255,255,255,1)] active:translate-x-[3px] active:translate-y-[3px] active:shadow-none transition-all duration-100 cursor-pointer"
         >
-          <Plus className="w-4 h-4 text-neutral-950" />
+          <Plus className="w-4 h-4 text-neutral-950 stroke-[3]" />
           Añadir Producto
         </button>
       </div>
 
       {errorMsg && (
-        <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm flex items-center gap-3">
+        <div className="p-4 border-2 border-red-600 bg-red-600/10 text-red-500 text-xs font-mono font-bold leading-relaxed flex items-center gap-3">
           <AlertCircle className="w-5 h-5 flex-shrink-0" />
           <span>{errorMsg}</span>
         </div>
@@ -212,29 +212,28 @@ export default function AdminProductsPage() {
 
       {/* Main Table view / loading state */}
       {isLoading ? (
-        <div className="space-y-4">
-          <Skeleton className="w-full h-12 rounded-xl" />
-          <Skeleton className="w-full h-16 rounded-xl" />
-          <Skeleton className="w-full h-16 rounded-xl" />
-          <Skeleton className="w-full h-16 rounded-xl" />
+        <div className="space-y-6">
+          <Skeleton className="w-full h-12 rounded-none border-2 border-neutral-200 dark:border-neutral-800" />
+          <Skeleton className="w-full h-16 rounded-none border-2 border-neutral-200 dark:border-neutral-800" />
+          <Skeleton className="w-full h-16 rounded-none border-2 border-neutral-200 dark:border-neutral-800" />
         </div>
       ) : products.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-16 text-center bg-neutral-900/20 rounded-2xl border border-neutral-900 border-dashed">
-          <p className="text-lg text-neutral-400 font-medium">
+        <div className="flex flex-col items-center justify-center py-16 text-center bg-neutral-50 dark:bg-neutral-900 border-4 border-dashed border-neutral-950 dark:border-white/20">
+          <p className="text-lg text-neutral-500 dark:text-neutral-400 font-black uppercase">
             No hay productos registrados en el inventario.
           </p>
           <button
             onClick={openCreateModal}
-            className="mt-4 text-sm text-neutral-300 hover:text-white font-mono underline cursor-pointer"
+            className="mt-4 text-sm text-neutral-950 dark:text-white hover:text-amber-500 dark:hover:text-amber-400 font-mono font-bold uppercase underline cursor-pointer"
           >
             Crear el primer producto ahora
           </button>
         </div>
       ) : (
-        <div className="overflow-x-auto rounded-2xl border border-neutral-900 bg-neutral-900/20">
+        <div className="overflow-x-auto border-4 border-neutral-950 dark:border-white bg-neutral-50 dark:bg-neutral-900 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] dark:shadow-[6px_6px_0px_0px_rgba(255,255,255,1)]">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="border-b border-neutral-900 text-xs font-mono uppercase text-neutral-500">
+              <tr className="border-b-4 border-neutral-950 dark:border-white text-xs font-mono font-black uppercase bg-neutral-100 dark:bg-neutral-800 text-neutral-900 dark:text-white">
                 <th className="py-4 px-6">Producto</th>
                 <th className="py-4 px-6">Precio</th>
                 <th className="py-4 px-6">Stock</th>
@@ -242,36 +241,36 @@ export default function AdminProductsPage() {
                 <th className="py-4 px-6 text-right">Acciones</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-neutral-900/60 text-sm">
+            <tbody className="divide-y-2 divide-neutral-200 dark:divide-neutral-800 text-sm">
               {products.map((product) => (
-                <tr key={product.id} className="hover:bg-neutral-900/30 transition-colors">
-                  <td className="py-5 px-6 font-medium text-white">
+                <tr key={product.id} className="hover:bg-neutral-100/50 dark:hover:bg-neutral-800/40 transition-colors">
+                  <td className="py-5 px-6 font-medium text-neutral-950 dark:text-white">
                     <div className="flex flex-col">
-                      <div className="flex items-center gap-2">
-                        <span>{product.name}</span>
+                      <div className="flex items-center gap-2.5">
+                        <span className="font-black uppercase tracking-tight">{product.name}</span>
                         {product.brand && product.brand !== "other" && (
-                          <span className="text-[8px] font-mono tracking-wider px-1.5 py-0.5 rounded bg-white/[0.04] border border-white/5 text-neutral-450 uppercase font-semibold">
+                          <span className="text-[8px] font-mono tracking-wider px-2 py-0.5 border border-neutral-950 dark:border-white bg-neutral-950 dark:bg-white text-white dark:text-neutral-950 uppercase font-bold shrink-0">
                             {product.brand}
                           </span>
                         )}
                       </div>
-                      <span className="text-xs text-neutral-550 font-normal line-clamp-1 max-w-sm mt-0.5">
+                      <span className="text-xs text-neutral-500 dark:text-neutral-400 font-normal line-clamp-1 max-w-sm mt-1">
                         {product.description}
                       </span>
                     </div>
                   </td>
-                  <td className="py-5 px-6 font-mono text-neutral-300 font-semibold">
+                  <td className="py-5 px-6 font-mono text-neutral-900 dark:text-neutral-300 font-bold">
                     {formatPrice(product.price, product.currency)}
                   </td>
-                  <td className="py-5 px-6 font-mono text-neutral-350">
+                  <td className="py-5 px-6 font-mono text-neutral-700 dark:text-neutral-350 font-bold">
                     {product.stock}
                   </td>
                   <td className="py-5 px-6">
                     <span
-                      className={`inline-flex px-2 py-0.5 rounded-full text-xs font-medium ${
+                      className={`inline-flex px-2.5 py-1 border-2 text-xs font-black uppercase ${
                         product.isActive
-                          ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
-                          : "bg-neutral-800 text-neutral-500 border border-neutral-700/30"
+                          ? "border-emerald-600 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
+                          : "border-neutral-400 dark:border-neutral-600 bg-neutral-100 dark:bg-neutral-800 text-neutral-500"
                       }`}
                     >
                       {product.isActive ? "Activo" : "Inactivo"}
@@ -281,17 +280,17 @@ export default function AdminProductsPage() {
                     <div className="flex items-center justify-end gap-3">
                       <button
                         onClick={() => openEditModal(product)}
-                        className="p-2 rounded-lg text-neutral-400 hover:text-white hover:bg-neutral-800/80 transition-colors cursor-pointer"
+                        className="p-2 border-2 border-neutral-950 dark:border-white bg-white dark:bg-neutral-850 hover:bg-neutral-950 hover:text-white dark:hover:bg-white dark:hover:text-neutral-950 transition-all active:translate-x-[1px] active:translate-y-[1px] shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] dark:shadow-[2px_2px_0px_0px_rgba(255,255,255,1)] active:shadow-none cursor-pointer"
                         aria-label="Editar"
                       >
-                        <Edit2 className="w-4 h-4" />
+                        <Edit2 className="w-3.5 h-3.5 stroke-[2.5]" />
                       </button>
                       <button
                         onClick={() => handleDelete(product.id)}
-                        className="p-2 rounded-lg text-neutral-500 hover:text-red-400 hover:bg-red-500/10 transition-colors cursor-pointer"
+                        className="p-2 border-2 border-neutral-950 dark:border-white bg-white dark:bg-neutral-850 hover:bg-red-650 hover:text-white dark:hover:bg-red-600 dark:hover:text-white transition-all active:translate-x-[1px] active:translate-y-[1px] shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] dark:shadow-[2px_2px_0px_0px_rgba(255,255,255,1)] active:shadow-none cursor-pointer"
                         aria-label="Eliminar"
                       >
-                        <Trash2 className="w-4 h-4" />
+                        <Trash2 className="w-3.5 h-3.5 stroke-[2]" />
                       </button>
                     </div>
                   </td>
@@ -304,37 +303,41 @@ export default function AdminProductsPage() {
 
       {/* CRUD Edit/Create Modal Overlay */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto">
           <div className="absolute inset-0 bg-black/85 backdrop-blur-xs" onClick={() => setIsModalOpen(false)} />
           
-          <div className="relative z-10 w-full max-w-lg bg-neutral-905 border border-neutral-800 rounded-2xl shadow-2xl overflow-hidden">
-            <div className="px-6 py-5 border-b border-neutral-800 flex items-center justify-between">
-              <h2 className="text-lg font-bold text-white">
+          <div className="relative z-10 w-full max-w-lg bg-white dark:bg-neutral-900 border-4 border-neutral-950 dark:border-white rounded-none shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] dark:shadow-[8px_8px_0px_0px_rgba(255,255,255,1)] overflow-hidden animate-brutal-pop">
+            <div className="px-6 py-5 border-b-4 border-neutral-950 dark:border-white flex items-center justify-between bg-neutral-50 dark:bg-neutral-950">
+              <h2 className="text-xl font-black uppercase text-neutral-950 dark:text-white font-sans">
                 {editingProduct ? "Editar Producto" : "Nuevo Producto"}
               </h2>
-              <button onClick={() => setIsModalOpen(false)} className="text-neutral-500 hover:text-white transition-colors cursor-pointer">
-                <X className="w-5 h-5" />
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className="p-2 border-2 border-neutral-950 dark:border-white bg-white dark:bg-neutral-800 text-neutral-950 dark:text-white hover:bg-neutral-950 hover:text-white dark:hover:bg-white dark:hover:text-neutral-950 rounded-none transition-all duration-100 active:translate-x-[2px] active:translate-y-[2px] shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] dark:shadow-[2px_2px_0px_0px_rgba(255,255,255,1)] active:shadow-none cursor-pointer flex items-center justify-center"
+                aria-label="Cerrar modal"
+              >
+                <X className="w-4 h-4 stroke-[2.5]" />
               </button>
             </div>
 
-            <form onSubmit={handleSubmit} className="p-6 space-y-4 max-h-[80vh] overflow-y-auto">
+            <form onSubmit={handleSubmit} className="p-6 space-y-4 max-h-[75vh] overflow-y-auto">
               <div className="grid grid-cols-2 gap-4">
                 <div className="col-span-2 sm:col-span-1">
-                  <label className="block text-xs font-mono text-neutral-450 uppercase mb-1">Nombre</label>
+                  <label className="block text-xs font-mono text-neutral-600 dark:text-neutral-400 uppercase font-bold mb-1.5">Nombre</label>
                   <input
                     type="text"
                     required
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl bg-neutral-950 border border-neutral-800 text-white text-sm focus:border-neutral-700 outline-none transition-colors"
+                    className="w-full px-4 py-3 rounded-none bg-white dark:bg-neutral-950 border-2 border-neutral-950 dark:border-white/40 dark:focus:border-white text-neutral-950 dark:text-white text-sm outline-none transition-colors font-sans uppercase font-bold"
                   />
                 </div>
                 <div className="col-span-2 sm:col-span-1">
-                  <label className="block text-xs font-mono text-neutral-450 uppercase mb-1">Marca del Auto</label>
+                  <label className="block text-xs font-mono text-neutral-600 dark:text-neutral-400 uppercase font-bold mb-1.5">Marca del Auto</label>
                   <select
                     value={brand}
                     onChange={(e) => setBrand(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl bg-neutral-950 border border-neutral-800 text-white text-sm focus:border-neutral-700 outline-none transition-colors"
+                    className="w-full px-4 py-3 rounded-none bg-white dark:bg-neutral-950 border-2 border-neutral-950 dark:border-white/40 dark:focus:border-white text-neutral-950 dark:text-white text-sm outline-none transition-colors font-mono font-bold uppercase"
                   >
                     <option value="ferrari">Ferrari</option>
                     <option value="lamborghini">Lamborghini</option>
@@ -345,19 +348,19 @@ export default function AdminProductsPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-mono text-neutral-450 uppercase mb-1">Descripción</label>
+                <label className="block text-xs font-mono text-neutral-600 dark:text-neutral-400 uppercase font-bold mb-1.5">Descripción</label>
                 <textarea
                   required
                   rows={3}
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl bg-neutral-950 border border-neutral-800 text-white text-sm focus:border-neutral-700 outline-none transition-colors resize-none"
+                  className="w-full px-4 py-3 rounded-none bg-white dark:bg-neutral-950 border-2 border-neutral-950 dark:border-white/40 dark:focus:border-white text-neutral-950 dark:text-white text-sm outline-none transition-colors resize-none font-sans"
                 />
               </div>
 
               <div className="grid grid-cols-3 gap-4">
                 <div className="col-span-2">
-                  <label className="block text-xs font-mono text-neutral-450 uppercase mb-1">Precio</label>
+                  <label className="block text-xs font-mono text-neutral-600 dark:text-neutral-400 uppercase font-bold mb-1.5">Precio</label>
                   <input
                     type="number"
                     step="0.01"
@@ -365,16 +368,15 @@ export default function AdminProductsPage() {
                     placeholder="0.00"
                     value={price}
                     onChange={(e) => setPrice(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl bg-neutral-950 border border-neutral-800 text-white text-sm focus:border-neutral-700 outline-none transition-colors"
+                    className="w-full px-4 py-3 rounded-none bg-white dark:bg-neutral-950 border-2 border-neutral-950 dark:border-white/40 dark:focus:border-white text-neutral-950 dark:text-white text-sm outline-none transition-colors font-mono font-bold"
                   />
-                  <p className="mt-1 text-[9px] text-neutral-500 font-mono">Permite decimales para precisión de la moneda</p>
                 </div>
                 <div>
-                  <label className="block text-xs font-mono text-neutral-450 uppercase mb-1">Moneda</label>
+                  <label className="block text-xs font-mono text-neutral-600 dark:text-neutral-400 uppercase font-bold mb-1.5">Moneda</label>
                   <select
                     value={currency}
                     onChange={(e) => setCurrency(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl bg-neutral-950 border border-neutral-800 text-white text-sm focus:border-neutral-700 outline-none transition-colors"
+                    className="w-full px-4 py-3 rounded-none bg-white dark:bg-neutral-950 border-2 border-neutral-950 dark:border-white/40 dark:focus:border-white text-neutral-950 dark:text-white text-sm outline-none transition-colors font-mono font-bold"
                   >
                     <option value="USD">USD ($)</option>
                     <option value="CLP">CLP ($)</option>
@@ -384,27 +386,27 @@ export default function AdminProductsPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-mono text-neutral-450 uppercase mb-1">Stock de Unidades</label>
+                <label className="block text-xs font-mono text-neutral-600 dark:text-neutral-400 uppercase font-bold mb-1.5">Stock de Unidades</label>
                 <input
                   type="number"
                   required
                   value={stock}
                   onChange={(e) => setStock(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl bg-neutral-950 border border-neutral-800 text-white text-sm focus:border-neutral-700 outline-none transition-colors"
+                  className="w-full px-4 py-3 rounded-none bg-white dark:bg-neutral-950 border-2 border-neutral-950 dark:border-white/40 dark:focus:border-white text-neutral-950 dark:text-white text-sm outline-none transition-colors font-mono font-bold"
                 />
               </div>
 
               {/* device gallery file picker */}
               <div>
-                <label className="block text-xs font-mono text-neutral-450 uppercase mb-1">Imagen del Vehículo</label>
-                <div className="flex flex-col gap-3">
-                  <label className="flex flex-col items-center justify-center w-full h-28 border border-dashed rounded-xl border-neutral-850 hover:border-neutral-700 bg-neutral-950 hover:bg-neutral-950/70 transition-all cursor-pointer text-center">
+                <label className="block text-xs font-mono text-neutral-600 dark:text-neutral-400 uppercase font-bold mb-1.5">Imagen del Vehículo</label>
+                <div className="flex flex-col gap-4">
+                  <label className="flex flex-col items-center justify-center w-full h-28 border-2 border-dashed border-neutral-950 dark:border-white/40 bg-neutral-50 dark:bg-neutral-950 hover:bg-neutral-100 dark:hover:bg-neutral-900 transition-all rounded-none cursor-pointer text-center">
                     <div className="flex flex-col items-center justify-center px-4 py-3">
                       <Plus className="w-5 h-5 text-neutral-500 mb-1" />
-                      <p className="text-xs text-neutral-450 truncate max-w-xs font-medium">
+                      <p className="text-xs text-neutral-650 dark:text-neutral-400 truncate max-w-xs font-bold font-sans uppercase">
                         {imageFile ? imageFile.name : "Seleccionar desde el dispositivo"}
                       </p>
-                      <p className="mt-0.5 text-[9px] text-neutral-500 font-mono">JPG, PNG, WEBP, etc.</p>
+                      <p className="mt-0.5 text-[9px] text-neutral-400 dark:text-neutral-500 font-mono">JPG, PNG, WEBP</p>
                     </div>
                     <input
                       type="file"
@@ -419,8 +421,8 @@ export default function AdminProductsPage() {
                   </label>
                   
                   {(imageUrl || imageFile) && (
-                    <div className="flex items-center gap-3 p-2.5 rounded-xl border border-neutral-800 bg-neutral-950/40">
-                      <div className="relative w-12 h-12 rounded-lg overflow-hidden bg-black flex-shrink-0">
+                    <div className="flex items-center gap-3.5 p-3 border-2 border-neutral-950 dark:border-white/20 bg-neutral-50 dark:bg-neutral-950/40 rounded-none">
+                      <div className="relative w-12 h-12 rounded-none overflow-hidden bg-black flex-shrink-0 border border-neutral-350 dark:border-neutral-800">
                         <img
                           src={imageFile ? URL.createObjectURL(imageFile) : imageUrl}
                           alt="Vista previa"
@@ -428,8 +430,8 @@ export default function AdminProductsPage() {
                         />
                       </div>
                       <div className="flex-grow min-w-0">
-                        <p className="text-[11px] font-mono text-neutral-400 truncate">
-                          {imageFile ? imageFile.name : "Imagen del catálogo cargada"}
+                        <p className="text-[10px] font-mono text-neutral-550 dark:text-neutral-400 truncate font-bold">
+                          {imageFile ? imageFile.name : "Imagen cargada"}
                         </p>
                       </div>
                       <button
@@ -438,7 +440,7 @@ export default function AdminProductsPage() {
                           setImageFile(null);
                           setImageUrl("");
                         }}
-                        className="text-neutral-500 hover:text-red-400 p-1.5 transition-colors cursor-pointer"
+                        className="text-neutral-500 hover:text-red-500 p-1.5 transition-colors cursor-pointer border border-transparent hover:border-red-500 rounded-none"
                         aria-label="Quitar imagen"
                       >
                         <X className="w-4 h-4" />
@@ -451,7 +453,7 @@ export default function AdminProductsPage() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full mt-4 py-4 rounded-xl bg-neutral-100 hover:bg-white text-neutral-950 font-semibold transition-all transform active:scale-[0.98] disabled:bg-neutral-800 disabled:text-neutral-500 cursor-pointer"
+                className="w-full mt-4 py-4 border-2 border-neutral-950 dark:border-white rounded-none bg-amber-500 hover:bg-amber-400 text-neutral-950 font-black uppercase tracking-widest text-xs shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] dark:shadow-[3px_3px_0px_0px_rgba(255,255,255,1)] active:translate-x-[3px] active:translate-y-[3px] active:shadow-none transition-all duration-100 disabled:bg-neutral-800 disabled:text-neutral-500 disabled:cursor-not-allowed cursor-pointer"
               >
                 {isSubmitting ? "Guardando..." : "Guardar Producto"}
               </button>

@@ -26,25 +26,25 @@ export function ProductGrid({ products, isLoading = false }: ProductGridProps) {
         {Array.from({ length: 8 }).map((_, index) => (
           <div
             key={index}
-            className="rounded-2xl bg-neutral-900 border border-neutral-800/60 p-4 h-[420px] flex flex-col justify-between"
+            className="rounded-none bg-neutral-900 border-2 border-white/20 p-5 h-[440px] flex flex-col justify-between"
           >
             {/* Image Skeleton */}
-            <Skeleton className="w-full h-[220px] rounded-xl" />
+            <Skeleton className="w-full h-[220px] rounded-none" />
 
             {/* Content Skeletons */}
-            <div className="mt-4 flex-grow flex flex-col justify-between">
+            <div className="mt-5 flex-grow flex flex-col justify-between">
               <div>
-                <Skeleton className="w-3/4 h-5 rounded-md" />
-                <Skeleton className="w-full h-4 mt-2 rounded-md" />
-                <Skeleton className="w-5/6 h-4 mt-1 rounded-md" />
+                <Skeleton className="w-3/4 h-5 rounded-none" />
+                <Skeleton className="w-full h-4 mt-2 rounded-none" />
+                <Skeleton className="w-5/6 h-4 mt-1 rounded-none" />
               </div>
 
-              <div className="mt-4 flex items-center justify-between pt-3 border-t border-neutral-800/40">
+              <div className="mt-4 flex items-center justify-between pt-4 border-t-2 border-dashed border-white/10">
                 <div className="flex flex-col gap-1">
-                  <Skeleton className="w-10 h-3 rounded-md" />
-                  <Skeleton className="w-20 h-5 rounded-md" />
+                  <Skeleton className="w-10 h-3 rounded-none" />
+                  <Skeleton className="w-20 h-5 rounded-none" />
                 </div>
-                <Skeleton className="w-10 h-10 rounded-xl" />
+                <Skeleton className="w-10 h-10 rounded-none" />
               </div>
             </div>
           </div>

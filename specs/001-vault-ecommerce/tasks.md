@@ -145,3 +145,23 @@
 - [x] T034 Restyle hero catalog banner to be full-width, borderless, and marginless, and implement brand-distinctive layouts and advanced GSAP parallax transition animations per A-005 (partial)
 - [x] T035 Decouple hero slideshow scroll/navigation from catalog product filtering per user instruction (partial)
 - [x] T036 Separate hero slideshow from catalog grid with a distinct full-width container featuring a detailed brand-specific mesh gradient background per user instruction (partial)
+
+## Phase 9: Convergence
+
+**Purpose**: Transition codebase styling to Modern Brutalist art direction, remove GSAP animations, and implement subtle Tailwind transitions.
+
+- [x] T037 Remove all GSAP imports, ScrollTrigger plugins, and timeline logic across catalog-view.tsx, product-card.tsx, and toast-container.tsx per SC-001 / user request (contradicts)
+- [x] T038 Redesign app/globals.css and components to establish a Modern Brutalist layout (thick high-contrast borders, solid shadows, variable typography sizing, stark grid patterns) replacing the luxury glowing dark mode per user request (contradicts)
+- [x] T039 Implement subtle entrance animations using utility Tailwind CSS classes and transitions on navigation elements, page sections, catalog cards, and toasts per user request (missing)
+- [x] T040 Replace the pinned, scroll-driven hero slideshow in components/templates/catalog-view.tsx with a responsive, non-pinned Modern Brutalist banner section per user request (partial)
+- [x] T041 Uninstall the gsap library and clean up dependencies inside package.json per user request (unrequested)
+
+## Phase 10: Convergence
+
+**Purpose**: Refactor cart drawer, admin login, and admin dashboard to Brutalist Modern styling, add light/dark mode theme toggle, and refine responsiveness.
+
+- [x] T042 Refactor the shopping cart aside-bar (CartDrawer component) to match the Brutalist Modern layout and support light/dark modes per user request (contradicts)
+- [x] T043 Refactor the admin login interface (AdminLoginForm component) to match the Brutalist Modern layout and support light/dark modes per user request (contradicts)
+- [x] T044 Refactor the admin dashboard layouts and forms (AdminLayout and AdminProductsPage components) to match the Brutalist Modern layout and support light/dark modes per user request (contradicts)
+- [x] T045 Implement a functional light/dark mode theme toggle button in the main catalog navbar with persistence to localStorage per user request (missing)
+- [x] T046 Refine responsiveness details (mobile-friendly spacing, card grid, and layout responsiveness) across all views per user request (partial)

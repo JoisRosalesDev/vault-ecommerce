@@ -3,7 +3,6 @@
 import { useToastStore, Toast } from "@/hooks/useToastStore";
 import { X } from "lucide-react";
 import { useEffect, useState } from "react";
-import { gsap } from "gsap";
 
 export function ToastContainer() {
   const toasts = useToastStore((state) => state.toasts);
@@ -17,7 +16,7 @@ export function ToastContainer() {
   if (!hasHydrated) return null;
 
   return (
-    <div className="fixed bottom-6 right-6 z-55 flex flex-col gap-3 max-w-sm w-full px-4 sm:px-0 pointer-events-none">
+    <div className="fixed bottom-6 right-6 z-55 flex flex-col gap-4 max-w-sm w-full px-4 sm:px-0 pointer-events-none">
       {toasts.map((toast) => (
         <ToastItem key={toast.id} toast={toast} onDismiss={() => dismissToast(toast.id)} />
       ))}
@@ -26,78 +25,80 @@ export function ToastContainer() {
 }
 
 function ToastItem({ toast, onDismiss }: { toast: Toast; onDismiss: () => void }) {
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setVisible(true), 10);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const handleDismiss = () => {
+    setVisible(false);
+    setTimeout(onDismiss, 200);
+  };
+
+  // Auto-dismiss after 4 seconds
+  useEffect(() => {
+    const timer = setTimeout(handleDismiss, 4000);
+    return () => clearTimeout(timer);
+  }, []);
+
   const getBrandStyles = () => {
     switch (toast.brand) {
       case "ferrari":
         return {
-          glow: "shadow-[0_0_20px_rgba(224,30,38,0.15)] border-red-500/30 bg-red-950/20 backdrop-blur-md",
-          indicator: "bg-red-500",
-          text: "text-red-400",
+          glow: "border-2 border-red-600 bg-red-600 text-white shadow-[4px_4px_0px_0px_#ffffff]",
+          indicator: "bg-white",
+          btnColor: "text-white/80 hover:text-white",
         };
       case "lamborghini":
         return {
-          glow: "shadow-[0_0_20px_rgba(255,204,0,0.15)] border-amber-500/30 bg-amber-950/20 backdrop-blur-md",
-          indicator: "bg-amber-500",
-          text: "text-amber-400",
+          glow: "border-2 border-amber-500 bg-amber-400 text-neutral-950 shadow-[4px_4px_0px_0px_#ffffff]",
+          indicator: "bg-neutral-950",
+          btnColor: "text-neutral-950/80 hover:text-neutral-950",
         };
       case "bugatti":
         return {
-          glow: "shadow-[0_0_20px_rgba(10,70,228,0.15)] border-blue-500/30 bg-blue-950/20 backdrop-blur-md",
-          indicator: "bg-blue-500",
-          text: "text-blue-400",
+          glow: "border-2 border-blue-600 bg-blue-600 text-white shadow-[4px_4px_0px_0px_#ffffff]",
+          indicator: "bg-white",
+          btnColor: "text-white/80 hover:text-white",
         };
       default:
         return {
-          glow: "shadow-[0_0_20px_rgba(245,158,11,0.08)] border-white/10 bg-neutral-900/90 backdrop-blur-md",
-          indicator: "bg-amber-500",
-          text: "text-amber-500",
+          glow: "border-2 border-white bg-neutral-900 text-white shadow-[4px_4px_0px_0px_rgba(255,255,255,0.4)]",
+          indicator: "bg-white",
+          btnColor: "text-white/80 hover:text-white",
         };
     }
   };
 
   const brandStyles = getBrandStyles();
 
-  useEffect(() => {
-    gsap.fromTo(
-      `#toast-${toast.id}`,
-      { x: 120, opacity: 0 },
-      { x: 0, opacity: 1, duration: 0.5, ease: "power3.out" }
-    );
-  }, [toast.id]);
-
-  const handleDismiss = () => {
-    gsap.to(`#toast-${toast.id}`, {
-      x: 120,
-      opacity: 0,
-      duration: 0.3,
-      ease: "power3.in",
-      onComplete: onDismiss,
-    });
-  };
-
   return (
     <div
       id={`toast-${toast.id}`}
-      className={`pointer-events-auto flex items-start gap-3.5 p-4 rounded-xl border transition-all duration-300 font-sans ${brandStyles.glow}`}
+      className={`pointer-events-auto flex items-start gap-3.5 p-4 rounded-none border transition-all duration-200 font-sans ${
+        visible ? "translate-x-0 opacity-100" : "translate-x-12 opacity-0"
+      } ${brandStyles.glow}`}
     >
       <div className="flex-shrink-0 mt-1">
-        <div className={`w-2 h-2 rounded-full ${brandStyles.indicator} animate-pulse`} />
+        <div className={`w-2.5 h-2.5 rounded-none ${brandStyles.indicator} animate-pulse`} />
       </div>
       <div className="flex-grow">
         <div className="flex items-start justify-between gap-2">
-          <p className="text-xs font-semibold text-neutral-100 tracking-tight leading-snug">
+          <p className="text-xs font-black uppercase tracking-wider leading-snug">
             {toast.message}
           </p>
           <button
             onClick={handleDismiss}
-            className="text-neutral-500 hover:text-neutral-300 transition-colors cursor-pointer"
+            className={`${brandStyles.btnColor} transition-colors cursor-pointer`}
             aria-label="Cerrar notificación"
           >
-            <X className="w-3.5 h-3.5" />
+            <X className="w-4 h-4 stroke-[3]" />
           </button>
         </div>
         {toast.description && (
-          <p className="mt-1 text-[10px] text-neutral-400 font-mono tracking-tight leading-relaxed">
+          <p className="mt-1.5 text-[9px] font-mono tracking-tight leading-relaxed opacity-90">
             {toast.description}
           </p>
         )}
