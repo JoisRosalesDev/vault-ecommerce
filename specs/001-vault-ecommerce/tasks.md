@@ -168,3 +168,52 @@
 - [x] T047 Optimize icons and elements in admin pages for dark mode by using standard Tailwind colors (completed)
 - [x] T048 Fix deleted product listing persistence to filter out soft-deleted products from both client and admin views (completed)
 - [x] T049 Integrate dark mode theme toggle button into the admin dashboard navigation header (completed)
+
+## Phase 11: Convergence
+
+**Purpose**: Apply Premium Automotive UI/UX Overhaul strictly to the Hero and navigation Header/Menu components.
+
+- [x] T050 Reinstall the gsap library in package.json to enable GSAP macro-animations per plan: animation strategy (missing)
+- [x] T051 Import Montserrat or Syncopate in app/layout.tsx and configure heading/display font variable in app/globals.css per plan: typography (missing)
+- [x] T052 Refactor Header (navbar) and Hero components in components/templates/catalog-view.tsx to be dark-mode exclusive with a Glassmorphism & Neumorphism hybrid styling per Convergence Directive: Art Direction (contradicts)
+- [x] T053 Update text typography in Header and Hero sections of components/templates/catalog-view.tsx to apply the new wide/extended display font for headings per Convergence Directive: Typography (partial)
+- [x] T054 Standardize Lucide icons inside Header and Hero components to use a consistent strokeWidth of 1.5 per Convergence Directive: Iconography (contradicts)
+- [x] T055 Implement GSAP parallax effects on car images and staggered reveals in the Hero component per Convergence Directive: Macro-animations (missing)
+- [x] T056 Apply premium Tailwind hover and click transitions to all Header and Hero buttons and interactive elements per Convergence Directive: Micro-interactions (missing)
+
+## Phase 12: Convergence
+
+**Purpose**: Apply Premium Automotive UI/UX Overhaul to the rest of the codebase including cart sidebar, notifications, admin login, layout, CRUD dashboard, forms, and product cards.
+
+- [x] T057 Refactor CartDrawer component in components/organisms/cart-drawer.tsx to use glassmorphic panels and neumorphic control buttons per Convergence Directive: Art Direction (contradicts)
+- [x] T058 Refactor ToastItem in components/organisms/toast-container.tsx to display rounded glassmorphic notification panels with soft glow shadows per Convergence Directive: Art Direction (contradicts)
+- [x] T059 Refactor AdminLoginForm in app/(admin)/admin/login/page.tsx to feature a glassmorphic dashboard panel with ambient glow highlights per Convergence Directive: Art Direction (contradicts)
+- [x] T060 Refactor AdminLayout header in app/(admin)/admin/layout.tsx to be dark-mode exclusive, using a glassmorphic base and Montserrat typography per Convergence Directive: Art Direction (contradicts)
+- [x] T061 Refactor CRUD dashboard list, dialog forms, inputs, and action buttons in app/(admin)/admin/products/page.tsx to the premium hypercar aesthetic per Convergence Directive: Art Direction (contradicts)
+- [x] T062 Refactor ProductCard in components/molecules/product-card.tsx to display obsidian neumorphic card containers with brand-colored glowing hover effects per Convergence Directive: Art Direction (contradicts)
+
+## Phase 13: Convergence
+
+**Purpose**: Refactor footer element to match Premium Automotive UI/UX Overhaul and enforce dark-mode exclusivity across all components.
+
+- [x] T063 Refactor footer component in components/templates/catalog-view.tsx to use glassmorphic background, Montserrat typography, and strokeWidth 1.5 icons per plan: design (partial)
+- [x] T064 Remove theme toggle buttons and logic from catalog-view.tsx and admin/layout.tsx, and configure root layout to enforce dark mode per user instruction (contradicts)
+
+## Phase 14: Convergence
+
+**Purpose**: Refactor brand filters and catalog section headers to match Premium Automotive UI/UX Overhaul.
+
+- [x] T065 Refactor main catalog container, grid filters, and section headers in components/templates/catalog-view.tsx to apply premium glassmorphic, rounded filters, and Montserrat headings instead of Brutalist buttons (partial)
+
+## Phase 15: Convergence
+
+**Purpose**: Refactor Hero slideshow navigation to dot indicators and unify brand active styles using standard Tailwind colors.
+
+- [x] T066 Replace the brand selector text buttons at the bottom of the Hero in components/templates/catalog-view.tsx with a premium slider indicator dot navigation (partial)
+- [x] T067 Replace all instances of non-standard red-650 colors with standard red-600 across layout.tsx, login/page.tsx, product-card.tsx, and catalog-view.tsx to ensure consistent Ferrari active color rendering (contradicts)
+
+## Phase 16: Convergence
+
+**Purpose**: Implement automatic Hero slideshow slide transitions.
+
+- [x] T068 Add a useEffect interval timer to automatically cycle Hero slides every 5 seconds, resetting the delay upon manual interaction (partial)

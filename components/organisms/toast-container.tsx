@@ -47,27 +47,27 @@ function ToastItem({ toast, onDismiss }: { toast: Toast; onDismiss: () => void }
     switch (toast.brand) {
       case "ferrari":
         return {
-          glow: "border-2 border-red-600 bg-red-600 text-white shadow-[4px_4px_0px_0px_#ffffff]",
-          indicator: "bg-white",
-          btnColor: "text-white/80 hover:text-white",
+          glow: "border border-red-500/20 bg-neutral-950/80 backdrop-blur-md text-white shadow-[0_0_20px_rgba(220,38,38,0.25)]",
+          indicator: "bg-red-500 shadow-[0_0_8px_rgba(220,38,38,0.6)]",
+          btnColor: "text-neutral-400 hover:text-white",
         };
       case "lamborghini":
         return {
-          glow: "border-2 border-amber-500 bg-amber-400 text-neutral-950 shadow-[4px_4px_0px_0px_#ffffff]",
-          indicator: "bg-neutral-950",
-          btnColor: "text-neutral-950/80 hover:text-neutral-950",
+          glow: "border border-amber-500/20 bg-neutral-950/80 backdrop-blur-md text-white shadow-[0_0_20px_rgba(245,158,11,0.25)]",
+          indicator: "bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.6)]",
+          btnColor: "text-neutral-400 hover:text-white",
         };
       case "bugatti":
         return {
-          glow: "border-2 border-blue-600 bg-blue-600 text-white shadow-[4px_4px_0px_0px_#ffffff]",
-          indicator: "bg-white",
-          btnColor: "text-white/80 hover:text-white",
+          glow: "border border-blue-500/20 bg-neutral-950/80 backdrop-blur-md text-white shadow-[0_0_20px_rgba(37,99,235,0.25)]",
+          indicator: "bg-blue-500 shadow-[0_0_8px_rgba(37,99,235,0.6)]",
+          btnColor: "text-neutral-400 hover:text-white",
         };
       default:
         return {
-          glow: "border-2 border-white bg-neutral-900 text-white shadow-[4px_4px_0px_0px_rgba(255,255,255,0.4)]",
-          indicator: "bg-white",
-          btnColor: "text-white/80 hover:text-white",
+          glow: "border border-white/10 bg-neutral-950/80 backdrop-blur-md text-white shadow-[0_0_20px_rgba(255,255,255,0.08)]",
+          indicator: "bg-white shadow-[0_0_8px_rgba(255,255,255,0.6)]",
+          btnColor: "text-neutral-400 hover:text-white",
         };
     }
   };
@@ -77,16 +77,16 @@ function ToastItem({ toast, onDismiss }: { toast: Toast; onDismiss: () => void }
   return (
     <div
       id={`toast-${toast.id}`}
-      className={`pointer-events-auto flex items-start gap-3.5 p-4 rounded-none border transition-all duration-200 font-sans ${
+      className={`pointer-events-auto flex items-start gap-3.5 p-4 rounded-2xl border transition-all duration-300 font-sans ${
         visible ? "translate-x-0 opacity-100" : "translate-x-12 opacity-0"
       } ${brandStyles.glow}`}
     >
       <div className="flex-shrink-0 mt-1">
-        <div className={`w-2.5 h-2.5 rounded-none ${brandStyles.indicator} animate-pulse`} />
+        <div className={`w-2 h-2 rounded-full ${brandStyles.indicator} animate-pulse`} />
       </div>
       <div className="flex-grow">
         <div className="flex items-start justify-between gap-2">
-          <p className="text-xs font-black uppercase tracking-wider leading-snug">
+          <p className="text-xs font-black uppercase tracking-wider leading-snug font-heading">
             {toast.message}
           </p>
           <button
@@ -94,11 +94,11 @@ function ToastItem({ toast, onDismiss }: { toast: Toast; onDismiss: () => void }
             className={`${brandStyles.btnColor} transition-colors cursor-pointer`}
             aria-label="Cerrar notificación"
           >
-            <X className="w-4 h-4 stroke-[3]" />
+            <X className="w-4 h-4 stroke-[1.5]" />
           </button>
         </div>
         {toast.description && (
-          <p className="mt-1.5 text-[9px] font-mono tracking-tight leading-relaxed opacity-90">
+          <p className="mt-1.5 text-[9px] font-mono tracking-tight leading-relaxed opacity-80">
             {toast.description}
           </p>
         )}

@@ -110,32 +110,32 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
     <div className="fixed inset-0 z-50 overflow-hidden" role="dialog" aria-modal="true">
       {/* Backdrop Overlay */}
       <div
-        className="absolute inset-0 bg-black/80 backdrop-blur-xs transition-opacity duration-500"
+        className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-500"
         onClick={onClose}
       />
 
       <div className="absolute inset-y-0 right-0 max-w-full flex pl-10">
         {/* Drawer Panel */}
-        <div className="w-screen max-w-md bg-white dark:bg-neutral-950 border-l-4 border-neutral-950 dark:border-white text-neutral-950 dark:text-white flex flex-col h-full transition-transform duration-500 transform translate-x-0">
+        <div className="w-screen max-w-md bg-neutral-950/90 backdrop-blur-xl border-l border-white/10 text-white flex flex-col h-full shadow-[0_0_50px_rgba(0,0,0,0.8)] transition-transform duration-500 transform translate-x-0">
           {/* Header */}
-          <div className="px-6 py-5 border-b-4 border-neutral-950 dark:border-white flex items-center justify-between bg-neutral-50 dark:bg-neutral-900">
-            <h2 className="text-xl font-black tracking-tight uppercase flex items-center gap-2">
-              <ShoppingBag className="w-5 h-5 text-neutral-500 dark:text-neutral-450 stroke-[2.5]" />
+          <div className="px-6 py-5 border-b border-white/10 flex items-center justify-between bg-neutral-900/40 backdrop-blur-md">
+            <h2 className="text-xl font-black tracking-wider uppercase flex items-center gap-2 font-heading text-white">
+              <ShoppingBag className="w-5 h-5 text-red-500 stroke-[1.5]" />
               Su Carrito
             </h2>
             <button
               onClick={onClose}
-              className="p-2 border-2 border-neutral-950 dark:border-white bg-white dark:bg-neutral-900 text-neutral-950 dark:text-white hover:bg-neutral-950 hover:text-white dark:hover:bg-white dark:hover:text-neutral-950 rounded-none transition-all duration-100 active:translate-x-[2px] active:translate-y-[2px] shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] dark:shadow-[2px_2px_0px_0px_rgba(255,255,255,1)] active:shadow-none cursor-pointer flex items-center justify-center"
+              className="p-2.5 rounded-full border border-white/10 bg-white/5 text-neutral-400 hover:text-white hover:bg-white/10 active:scale-95 transition-all duration-300 cursor-pointer flex items-center justify-center shadow-[inset_0_1px_1px_rgba(255,255,255,0.1),0_2px_8px_rgba(0,0,0,0.5)]"
               aria-label="Cerrar carrito"
             >
-              <X className="w-5 h-5 stroke-[2.5]" />
+              <X className="w-5 h-5 stroke-[1.5]" />
             </button>
           </div>
 
           {/* Error Message Toast / Banner inside drawer */}
           {errorMsg && (
-            <div className="mx-6 mt-4 p-4 border-2 border-red-600 bg-red-600/10 text-red-500 text-xs font-mono font-bold leading-relaxed flex items-start gap-3">
-              <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
+            <div className="mx-6 mt-4 p-4 border border-red-500/20 bg-red-950/30 rounded-xl text-red-400 text-xs font-mono font-bold leading-relaxed flex items-start gap-3 shadow-[0_0_15px_rgba(220,38,38,0.1)]">
+              <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5 stroke-[1.5]" />
               <span>{errorMsg}</span>
             </div>
           )}
@@ -148,85 +148,96 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
               </div>
             ) : items.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-full text-center py-12">
-                <ShoppingBag className="w-12 h-12 text-neutral-400 dark:text-neutral-600 stroke-[2.5] mb-4" />
-                <p className="text-base text-neutral-500 dark:text-neutral-400 font-black uppercase">Su carrito está vacío</p>
-                <p className="text-xs text-neutral-400 dark:text-neutral-500 mt-1.5 font-mono">Explore el catálogo para añadir artículos.</p>
+                <ShoppingBag className="w-12 h-12 text-neutral-600 stroke-[1.5] mb-4" />
+                <p className="text-base text-neutral-450 font-black uppercase font-heading">Su carrito está vacío</p>
+                <p className="text-xs text-neutral-500 mt-1.5 font-mono">Explore el catálogo para añadir artículos.</p>
               </div>
             ) : (
-              <div className="space-y-6">
-                {items.map((item) => (
-                  <div
-                    key={item.id}
-                    className="flex py-4 border-b-2 border-dashed border-neutral-200 dark:border-neutral-800 last:border-0 items-start justify-between"
-                  >
-                    {/* Item Image */}
-                    <div className="relative w-16 h-16 rounded-none overflow-hidden bg-neutral-950 border-2 border-neutral-950 dark:border-white/20 flex-shrink-0">
-                      <Image
-                        src={item.images[0] || "/placeholder-product.jpg"}
-                        alt={item.name}
-                        fill
-                        className="object-cover"
-                        sizes="64px"
-                      />
-                    </div>
+              <div className="space-y-4">
+                {items.map((item) => {
+                  const activeBrand = (item.brand || "").toLowerCase();
+                  const brandBorder = activeBrand === "ferrari" 
+                    ? "hover:border-red-500/20" 
+                    : activeBrand === "lamborghini" || activeBrand === "lambo" 
+                    ? "hover:border-amber-500/20" 
+                    : activeBrand === "bugatti" 
+                    ? "hover:border-blue-500/20" 
+                    : "hover:border-white/15";
 
-                    {/* Item Details */}
-                    <div className="ml-4 flex-1 flex flex-col justify-between h-full min-w-0">
-                      <div>
-                        <h3 className="text-sm font-black text-neutral-950 dark:text-white uppercase line-clamp-1 leading-none font-sans">
-                          {item.name}
-                        </h3>
-                        <p className="text-xs font-mono font-bold text-neutral-500 dark:text-neutral-400 mt-1">
-                          {formatPrice(item.price, item.currency)}
-                        </p>
+                  return (
+                    <div
+                      key={item.id}
+                      className={`flex p-4 rounded-xl border border-white/5 bg-white/2.5 items-start justify-between relative overflow-hidden shadow-[2px_2px_5px_rgba(0,0,0,0.3)] transition-all duration-300 ${brandBorder}`}
+                    >
+                      {/* Item Image */}
+                      <div className="relative w-16 h-16 rounded-lg overflow-hidden bg-neutral-900 border border-white/10 flex-shrink-0">
+                        <Image
+                          src={item.images[0] || "/placeholder-product.jpg"}
+                          alt={item.name}
+                          fill
+                          className="object-cover"
+                          sizes="64px"
+                        />
                       </div>
 
-                      {/* Quantity Controller */}
-                      <div className="flex items-center gap-3 mt-3.5">
-                        <div className="flex items-center border-2 border-neutral-950 dark:border-white bg-white dark:bg-neutral-900 rounded-none overflow-hidden">
-                          <button
-                            onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                            className="p-1.5 text-neutral-600 dark:text-neutral-450 hover:bg-neutral-950 hover:text-white dark:hover:bg-white dark:hover:text-neutral-950 transition-colors"
-                            aria-label="Disminuir cantidad"
-                          >
-                            <Minus className="w-3 h-3 stroke-[2.5]" />
-                          </button>
-                          <span className="px-3.5 text-xs font-mono font-black text-center min-w-[24px] text-neutral-950 dark:text-white">
-                            {item.quantity}
-                          </span>
-                          <button
-                            onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                            disabled={item.quantity >= item.stock}
-                            className="p-1.5 text-neutral-600 dark:text-neutral-450 hover:bg-neutral-950 hover:text-white dark:hover:bg-white dark:hover:text-neutral-950 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
-                            aria-label="Aumentar cantidad"
-                          >
-                            <Plus className="w-3 h-3 stroke-[2.5]" />
-                          </button>
+                      {/* Item Details */}
+                      <div className="ml-4 flex-1 flex flex-col justify-between h-full min-w-0">
+                        <div>
+                          <h3 className="text-sm font-black text-white uppercase line-clamp-1 leading-none font-heading">
+                            {item.name}
+                          </h3>
+                          <p className="text-xs font-mono font-bold text-neutral-400 mt-1">
+                            {formatPrice(item.price, item.currency)}
+                          </p>
                         </div>
 
-                        <button
-                          onClick={() => removeItem(item.id)}
-                          className="text-neutral-400 dark:text-neutral-500 hover:text-red-500 dark:hover:text-red-400 p-2 border border-neutral-200 dark:border-neutral-800 hover:border-red-500 dark:hover:border-red-400 rounded-none transition-all cursor-pointer"
-                          aria-label="Eliminar producto"
-                        >
-                          <Trash2 className="w-4 h-4 stroke-[2]" />
-                        </button>
+                        {/* Quantity Controller */}
+                        <div className="flex items-center gap-3 mt-3.5">
+                          <div className="flex items-center border border-white/10 bg-neutral-900/60 rounded-full overflow-hidden shadow-[inset_0_1px_2px_rgba(0,0,0,0.6)]">
+                            <button
+                              onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                              className="p-1.5 rounded-full text-neutral-400 hover:text-white hover:bg-white/5 transition-colors cursor-pointer"
+                              aria-label="Disminuir cantidad"
+                            >
+                              <Minus className="w-3 h-3 stroke-[1.5]" />
+                            </button>
+                            <span className="px-3.5 text-xs font-mono font-black text-center min-w-[24px] text-white">
+                              {item.quantity}
+                            </span>
+                            <button
+                              onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                              disabled={item.quantity >= item.stock}
+                              className="p-1.5 rounded-full text-neutral-400 hover:text-white hover:bg-white/5 transition-colors disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
+                              aria-label="Aumentar cantidad"
+                            >
+                              <Plus className="w-3 h-3 stroke-[1.5]" />
+                            </button>
+                          </div>
+
+                          <button
+                            onClick={() => removeItem(item.id)}
+                            className="text-neutral-400 hover:text-red-500 p-2 rounded-full border border-white/5 hover:border-red-500/30 hover:bg-red-500/5 transition-all cursor-pointer"
+                            aria-label="Eliminar producto"
+                          >
+                            <Trash2 className="w-4 h-4 stroke-[1.5]" />
+                          </button>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </div>
 
           {/* Footer checkout area */}
           {hasHydrated && items.length > 0 && (
-            <div className="border-t-4 border-neutral-950 dark:border-white px-6 py-6 bg-neutral-50 dark:bg-neutral-900/60">
-              <div className="flex justify-between items-start text-base font-black text-neutral-950 dark:text-white mb-6 uppercase">
-                <span className="text-neutral-500 dark:text-neutral-400 mt-1 font-sans">Subtotal</span>
+            <div className="border-t border-white/10 px-6 py-6 bg-neutral-900/50 backdrop-blur-md">
+              <div className="flex justify-between items-start text-base font-black text-white mb-6 uppercase">
+                <span className="text-neutral-400 mt-1 font-heading tracking-widest text-xs">Subtotal</span>
                 <div className="flex flex-col items-end gap-1.5">
                   {getSubtotals().map(({ currency, amount }) => (
-                    <span key={currency} className="font-mono text-lg font-black text-neutral-950 dark:text-white">
+                    <span key={currency} className="font-mono text-lg font-black text-white">
                       {formatPrice(amount, currency)}
                     </span>
                   ))}
@@ -236,14 +247,14 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
               <button
                 onClick={handleCheckout}
                 disabled={isCheckoutLoading}
-                className="w-full flex items-center justify-center px-6 py-4 border-2 border-neutral-950 dark:border-white rounded-none bg-amber-500 text-neutral-950 font-black uppercase tracking-widest text-xs hover:bg-amber-400 active:translate-x-[3px] active:translate-y-[3px] active:shadow-none transition-all duration-100 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] dark:shadow-[3px_3px_0px_0px_rgba(255,255,255,1)] disabled:bg-neutral-800 disabled:text-neutral-500 disabled:cursor-not-allowed cursor-pointer"
+                className="w-full flex items-center justify-center px-6 py-4 rounded-full border border-white/10 bg-gradient-to-r from-red-600 to-amber-500 text-white font-black uppercase tracking-widest text-xs shadow-[0_4px_20px_rgba(239,68,68,0.25)] hover:shadow-[0_4px_30px_rgba(239,68,68,0.45)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 disabled:from-neutral-800 disabled:to-neutral-900 disabled:text-neutral-500 disabled:cursor-not-allowed cursor-pointer"
               >
                 {isCheckoutLoading ? "Procesando pago..." : "Proceder al Pago"}
               </button>
               <div className="mt-4 text-center">
                 <button
                   onClick={onClose}
-                  className="text-xs text-neutral-500 hover:text-neutral-950 dark:hover:text-white font-mono font-bold uppercase transition-colors cursor-pointer"
+                  className="text-xs text-neutral-400 hover:text-white font-mono font-bold uppercase transition-colors cursor-pointer"
                 >
                   o Continuar Comprando
                 </button>

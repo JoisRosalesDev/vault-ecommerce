@@ -93,25 +93,29 @@ function AdminLoginForm() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-white dark:bg-neutral-950 text-neutral-950 dark:text-white px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full bg-neutral-50 dark:bg-neutral-900 border-4 border-neutral-950 dark:border-white rounded-none p-8 md:p-12 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] dark:shadow-[8px_8px_0px_0px_rgba(255,255,255,1)] flex flex-col items-center">
+    <div className="min-h-screen flex items-center justify-center bg-neutral-950 text-white px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+      {/* Cockpit ambient glows */}
+      <div className="absolute -top-40 -left-40 w-96 h-96 rounded-full bg-red-600/10 blur-[120px] pointer-events-none" />
+      <div className="absolute -bottom-40 right-10 w-96 h-96 rounded-full bg-blue-600/10 blur-[120px] pointer-events-none" />
+
+      <div className="max-w-md w-full bg-neutral-900/60 backdrop-blur-xl border border-white/10 rounded-2xl p-8 md:p-12 shadow-[0_4px_30px_rgba(0,0,0,0.8)] flex flex-col items-center z-10">
         {/* Keyhole icon */}
-        <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-none bg-neutral-200 dark:bg-neutral-800 border-2 border-neutral-950 dark:border-white text-neutral-950 dark:text-white mb-6">
-          <Lock className="h-6 w-6 stroke-[2.5]" />
+        <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-white/5 border border-white/10 text-white mb-6 shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]">
+          <Lock className="h-6 w-6 stroke-[1.5]" />
         </div>
 
-        <span className="text-[10px] uppercase tracking-widest font-mono text-neutral-500 dark:text-neutral-400 font-bold">
+        <span className="text-[9px] uppercase tracking-[0.25em] font-mono text-red-500 font-extrabold">
           Acceso Privado
         </span>
-        <h1 className="mt-3 text-3xl font-black tracking-tight uppercase leading-none text-center font-sans">
+        <h1 className="mt-3 text-3xl font-black tracking-wide uppercase leading-none text-center font-heading bg-clip-text text-transparent bg-gradient-to-r from-white via-neutral-100 to-neutral-400">
           Administración VAULT
         </h1>
-        <p className="mt-4 text-xs text-neutral-500 dark:text-neutral-400 text-center font-mono leading-relaxed max-w-[280px]">
+        <p className="mt-4 text-xs text-neutral-400 text-center font-mono leading-relaxed max-w-[280px]">
           Inicie sesión con su cuenta autorizada para gestionar el catálogo.
         </p>
 
         {displayError && (
-          <div className="w-full mt-6 p-4 rounded-none bg-red-600 border-2 border-neutral-950 dark:border-white text-white font-mono text-xs text-center leading-relaxed">
+          <div className="w-full mt-6 p-4 rounded-xl bg-red-950/30 border border-red-500/20 text-red-400 font-mono text-xs text-center leading-relaxed shadow-[0_0_15px_rgba(220,38,38,0.1)]">
             {displayError}
           </div>
         )}
@@ -119,9 +123,9 @@ function AdminLoginForm() {
         <button
           onClick={handleGoogleLogin}
           disabled={isLoading}
-          className="w-full mt-8 flex items-center justify-center gap-3 px-6 py-4 rounded-none bg-amber-500 hover:bg-amber-400 text-neutral-950 font-black uppercase tracking-widest text-xs border-2 border-neutral-950 dark:border-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,1)] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all duration-100 disabled:bg-neutral-800 disabled:text-neutral-500 disabled:cursor-not-allowed cursor-pointer"
+          className="w-full mt-8 flex items-center justify-center gap-3 px-6 py-4 rounded-full bg-gradient-to-r from-red-600 to-amber-500 text-white font-black uppercase tracking-widest text-xs border border-white/10 shadow-[0_4px_20px_rgba(239,68,68,0.25)] hover:shadow-[0_4px_30px_rgba(239,68,68,0.45)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 disabled:from-neutral-800 disabled:to-neutral-900 disabled:text-neutral-500 disabled:cursor-not-allowed cursor-pointer"
         >
-          <LogIn className="w-5 h-5 stroke-[2.5]" />
+          <LogIn className="w-5 h-5 stroke-[1.5]" />
           {isLoading ? "Conectando..." : "Acceder con Google"}
         </button>
       </div>
