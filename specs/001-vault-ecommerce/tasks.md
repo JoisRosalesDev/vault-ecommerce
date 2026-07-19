@@ -217,3 +217,23 @@
 **Purpose**: Implement automatic Hero slideshow slide transitions.
 
 - [x] T068 Add a useEffect interval timer to automatically cycle Hero slides every 5 seconds, resetting the delay upon manual interaction (partial)
+
+## Phase 17: Convergence
+
+**Purpose**: Fix admin login background gradient rendering and resolve auth redirect sticky states.
+
+- [x] T069 Replace absolute glow divs in app/(admin)/admin/login/page.tsx with a smooth CSS radial-gradient background on the container to prevent clipped corner rendering artifacts (partial)
+- [x] T070 Update admin auth login redirects in app/(admin)/admin/login/page.tsx to use window.location.href instead of router.push to prevent session prefetch race conditions with edge middleware cookie checks (contradicts)
+
+## Phase 18: Convergence
+
+**Purpose**: Fix admin login layout exclusion in AdminLayout to allow full viewport width/height.
+
+- [x] T071 Exclude the admin login route from the dashboard header and container wrapper in app/(admin)/admin/layout.tsx to allow it to occupy the full viewport width/height (contradicts)
+
+## Phase 19: Convergence
+
+**Purpose**: Restore admin layout header on login route with specialized actions and adjust login container height.
+
+- [x] T072 Re-enable AdminLayout header for the admin login route in app/(admin)/admin/layout.tsx, omitting authenticated navigation controls and showing a back-to-shop link instead (contradicts)
+- [x] T073 Update app/(admin)/admin/login/page.tsx container height to calc(100vh-5rem) to align perfectly under the header (partial)

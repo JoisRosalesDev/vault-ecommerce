@@ -2,8 +2,8 @@
 
 import { supabase } from "@/lib/supabase";
 import { LogOut, FolderKanban } from "lucide-react";
+import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 
 export default function AdminLayout({
@@ -12,11 +12,14 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   const router = useRouter();
+  const pathname = usePathname();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   useEffect(() => {
     document.documentElement.classList.add("dark");
   }, []);
+
+  const isLoginPage = pathname === "/admin/login";
 
   const handleSignOut = async () => {
     setIsLoggingOut(true);
@@ -45,35 +48,52 @@ export default function AdminLayout({
               VAULT <span className="text-[8px] font-mono font-black tracking-[0.25em] border border-white/20 bg-white/5 text-white px-2.5 py-0.5 ml-2 uppercase rounded-full">ADMIN</span>
             </Link>
 
-            <nav className="hidden md:flex items-center gap-6 text-xs font-mono font-black uppercase text-neutral-450">
-              <Link
-                href="/admin/products"
-                className="hover:text-white transition-colors flex items-center gap-2 font-mono text-[10px] tracking-wider"
-              >
-                <FolderKanban className="w-4 h-4 stroke-[1.5]" />
-                Productos
-              </Link>
-            </nav>
+            {!isLoginPage && (
+              <nav className="hidden md:flex items-center gap-6 text-xs font-mono font-black uppercase text-neutral-450">
+                <Link
+                  href="/admin/products"
+                  className="hover:text-white transition-colors flex items-center gap-2 font-mono text-[10px] tracking-wider"
+                >
+                  <FolderKanban className="w-4 h-4 stroke-[1.5]" />
+                  Productos
+                </Link>
+              </nav>
+            )}
           </div>
 
           <div className="flex items-center gap-3">
-            <button
-              onClick={handleSignOut}
-              disabled={isLoggingOut}
-              className="flex items-center gap-2 px-4.5 py-2.5 rounded-full border border-white/10 bg-white/5 text-neutral-350 hover:bg-red-500/10 hover:text-red-500 hover:border-red-500/20 active:scale-95 transition-all duration-300 font-mono font-bold text-xs uppercase cursor-pointer disabled:opacity-50 shadow-[inset_0_1px_1px_rgba(255,255,255,0.1),0_2px_8px_rgba(0,0,0,0.5)]"
-              aria-label="Cerrar sesión"
-            >
-              <LogOut className="w-4 h-4 stroke-[1.5]" />
-              <span className="hidden sm:inline">{isLoggingOut ? "Cerrando..." : "Salir"}</span>
-            </button>
+            {isLoginPage ? (
+              <Link
+                href="/"
+                className="flex items-center gap-1.5 px-4.5 py-2.5 rounded-full border border-white/10 bg-white/5 text-neutral-300 hover:bg-white/10 hover:text-white active:scale-95 transition-all duration-300 font-mono font-bold text-xs uppercase cursor-pointer shadow-[inset_0_1px_1px_rgba(255,255,255,0.1),0_2px_8px_rgba(0,0,0,0.5)]"
+              >
+                Volver a la tienda
+              </Link>
+            ) : (
+              <button
+                onClick={handleSignOut}
+                disabled={isLoggingOut}
+                className="flex items-center gap-2 px-4.5 py-2.5 rounded-full border border-white/10 bg-white/5 text-neutral-350 hover:bg-red-500/10 hover:text-red-500 hover:border-red-500/20 active:scale-95 transition-all duration-300 font-mono font-bold text-xs uppercase cursor-pointer disabled:opacity-50 shadow-[inset_0_1px_1px_rgba(255,255,255,0.1),0_2px_8px_rgba(0,0,0,0.5)]"
+                aria-label="Cerrar sesión"
+              >
+                <LogOut className="w-4 h-4 stroke-[1.5]" />
+                <span className="hidden sm:inline">{isLoggingOut ? "Cerrando..." : "Salir"}</span>
+              </button>
+            )}
           </div>
         </div>
       </header>
 
       {/* Main dashboard content area */}
-      <div className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        {children}
-      </div>
+      {isLoginPage ? (
+        <div className="flex-1 w-full relative flex items-center justify-center">
+          {children}
+        </div>
+      ) : (
+        <div className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+          {children}
+        </div>
+      )}
     </div>
   );
 }

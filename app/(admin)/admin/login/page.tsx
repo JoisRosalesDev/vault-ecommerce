@@ -33,7 +33,7 @@ function AdminLoginForm() {
             }),
           });
 
-          router.push("/admin/products");
+          window.location.href = "/admin/products";
         } catch (err) {
           console.error("Auth sync handler failed:", err);
           setErrorMsg("Error al sincronizar la cuenta de administrador.");
@@ -47,7 +47,7 @@ function AdminLoginForm() {
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
         document.cookie = `sb-access-token=${session.access_token}; path=/; max-age=${session.expires_in}; SameSite=Lax; Secure`;
-        router.push("/admin/products");
+        window.location.href = "/admin/products";
       }
     };
     checkActiveSession();
@@ -93,11 +93,13 @@ function AdminLoginForm() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-neutral-950 text-white px-4 sm:px-6 lg:px-8 relative overflow-hidden">
-      {/* Cockpit ambient glows */}
-      <div className="absolute -top-40 -left-40 w-96 h-96 rounded-full bg-red-600/10 blur-[120px] pointer-events-none" />
-      <div className="absolute -bottom-40 right-10 w-96 h-96 rounded-full bg-blue-600/10 blur-[120px] pointer-events-none" />
-
+    <div
+      className="min-h-[calc(100vh-5rem)] w-full flex items-center justify-center text-white px-4 sm:px-6 lg:px-8 relative overflow-hidden"
+      style={{
+        background:
+          "radial-gradient(circle at 10% 10%, rgba(220, 38, 38, 0.08) 0%, transparent 45%), radial-gradient(circle at 90% 90%, rgba(37, 99, 235, 0.06) 0%, transparent 45%), #050505",
+      }}
+    >
       <div className="max-w-md w-full bg-neutral-900/60 backdrop-blur-xl border border-white/10 rounded-2xl p-8 md:p-12 shadow-[0_4px_30px_rgba(0,0,0,0.8)] flex flex-col items-center z-10">
         {/* Keyhole icon */}
         <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-white/5 border border-white/10 text-white mb-6 shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]">
